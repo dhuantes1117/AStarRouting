@@ -47,7 +47,7 @@ public class UnitTest {
     }
     
     public void gCostCorrect() throws Exception{
-        Node A = new Node("A", 0, 0);
+        Node A = new Node("A", 0, 0, true);
         Node B = new Node("B", 2, 0);
         Node C = new Node("C", 2, 2);
         

@@ -146,7 +146,7 @@ public class Cluster extends ArrayList<Node>{
     
     public ArrayList<Node> RouteAstar (Node Start, Node Dest){
         ArrayList<Node> Retable = new ArrayList<>();
-        Start.setg(0);
+        
         Astar(OPEN, CLOSED, Start, Dest);
         Retable.add(Dest);
         while(!Retable.contains(Start)) {  
