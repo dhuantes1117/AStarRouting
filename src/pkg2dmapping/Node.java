@@ -19,15 +19,20 @@ class Node {
             //should make it so edge with lowest cost is chosen
             //shouldn't have to directly compare Nodes, just Edges (no g ohterwise)
             //include ISDESTINATION!!!
-            int fi = i.g() + i.getConnection().h();
-            int fj = j.g() + j.getConnection().h();
+            int fi = i.g();
+            int fj = j.g();
+            if (!(i.isParent() && j.isParent()) && (i.isParent() || j.isParent())) {
+                if (i.isParent()) {
+                    return -1;
+                } else if (j.isParent()) {
+                    return 1;
+                }
+            }
             if (fi > fj) {
                 return 1;
             } else if (fj > fi) {
                 return -1;
             } else {
-                String namei = i.getConnection().getRoomName();
-                String namej = j.getConnection().getRoomName();
                 return 0;
             }
         }
