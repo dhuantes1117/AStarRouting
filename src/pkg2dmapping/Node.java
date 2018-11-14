@@ -41,7 +41,7 @@ class Node {
     private int y;
     private int g;
     private int h;
-    private boolean destination;
+    private boolean origin;
 
     public Node(String RoomName, String ClassName, int x, int y, int h, ArrayList<Edge> Neighbors, boolean destination) {
         this.RoomName = RoomName;
@@ -51,7 +51,7 @@ class Node {
         this.h = h;
         this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
-        this.destination = destination;
+        this.origin = destination;
     }
 
     public Node(String RoomName, int x, int y, ArrayList<Edge> Neighbors, boolean destination) {
@@ -61,7 +61,7 @@ class Node {
         this.h = Integer.MAX_VALUE;
         this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
-        this.destination = destination;
+        this.origin = destination;
     }
 
     public Node(String RoomName, int x, int y, boolean destination) {
@@ -69,7 +69,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = Integer.MAX_VALUE;
-        this.destination = destination;
+        this.origin = destination;
     }
 
     public Node(String RoomName, int x, int y) {
@@ -77,7 +77,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = Integer.MAX_VALUE;
-        this.destination = false;
+        this.origin = false;
     }
 
     public Node(int x, int y, boolean destination, ArrayList<Edge> Neighbors) {
@@ -85,7 +85,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = Integer.MAX_VALUE;
-        this.destination = destination;
+        this.origin = destination;
         this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
     }
@@ -95,7 +95,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = Integer.MAX_VALUE;
-        this.destination = destination;
+        this.origin = origin;
         this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
     }
@@ -105,7 +105,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = Integer.MAX_VALUE;
-        this.destination = destination;
+        this.origin = destination;
     }
 
     public Node(int x, int y) {
@@ -113,7 +113,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = Integer.MAX_VALUE;
-        this.destination = false;
+        this.origin = false;
     }
 
     /**
@@ -152,10 +152,10 @@ class Node {
     }
 
     /**
-     * @return the destination
+     * @return the origin
      */
-    public boolean isDestination() {
-        return destination;
+    public boolean isOrigin() {
+        return origin;
     }
 
     /**
@@ -217,6 +217,10 @@ class Node {
         //isOrigin add? or use isDestination to get around
         //the beginning not being able to be it's own parent
         //bc it's not in it's own neighbor's queue
+        if (origin) {
+            this.setg(0);
+            return;
+        }
         Edge ParentEdge = this.Neighbors.peek();
         this.setg(ParentEdge.getConnection().g + ParentEdge.g());
     }
