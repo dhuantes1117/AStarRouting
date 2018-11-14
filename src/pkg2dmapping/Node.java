@@ -10,7 +10,7 @@ class Node {
 
     private String RoomName;
     private String ClassName;
-    private ArrayList<Edge> Neighbors;
+    private PriorityQueue<Edge> Neighbors;
     private Node Parent;
     private final Comparator<Edge> c = new Comparator<Edge>() {
         @Override
@@ -49,7 +49,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = h;
-        this.Neighbors = Neighbors;
+        this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
         this.destination = destination;
     }
@@ -59,7 +59,7 @@ class Node {
         this.x = x;
         this.y = y;
         this.h = Integer.MAX_VALUE;
-        this.Neighbors = Neighbors;
+        this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
         this.destination = destination;
     }
@@ -86,7 +86,7 @@ class Node {
         this.y = y;
         this.h = Integer.MAX_VALUE;
         this.destination = destination;
-        this.Neighbors = Neighbors;
+        this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
     }
 
@@ -96,7 +96,7 @@ class Node {
         this.y = y;
         this.h = Integer.MAX_VALUE;
         this.destination = destination;
-        this.Neighbors = Neighbors;
+        this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
     }
 
@@ -133,7 +133,7 @@ class Node {
     /**
      * @return the Neighbors
      */
-    public ArrayList<Edge> getNeighbors() {
+    public PriorityQueue<Edge> getNeighbors() {
         return Neighbors;
     }
 
@@ -191,7 +191,7 @@ class Node {
      * @param Neighbors the Neighbors to set
      */
     public void setNeighbors(ArrayList<Edge> Neighbors) {
-        this.Neighbors = Neighbors;
+        this.Neighbors = new PriorityQueue<>(c);
         this.Neighbors.addAll(Neighbors);
     }
 
@@ -214,20 +214,11 @@ class Node {
     }
 
     public void updateg() {
-        if (Parent.equals(this)) {
-            this.setg(0);
-            return;
-        }
-        boolean flag = false;
-        for (Edge Neighbor : Neighbors) {
-            if (Neighbor.getConnection().equals(Parent)) {
-                flag = true;
-                this.setg(Parent.g + Neighbor.g());
-            }
-        }
-        if (!flag) {
-            System.out.println("Lazy Error Control, Update g doesn't work");
-        }
+        //isOrigin add? or use isDestination to get around
+        //the beginning not being able to be it's own parent
+        //bc it's not in it's own neighbor's queue
+        Edge ParentEdge = this.Neighbors.peek();
+        this.setg(ParentEdge.getConnection().g + ParentEdge.g());
     }
     
     public int updateg(Node N) {
