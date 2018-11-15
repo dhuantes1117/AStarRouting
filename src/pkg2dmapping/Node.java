@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 class Node {
@@ -136,6 +137,14 @@ class Node {
     public PriorityQueue<Edge> getNeighbors() {
         return Neighbors;
     }
+    
+    public ArrayList<Node> getNeighborNodes(){
+        ArrayList<Node> Retable = new ArrayList<>();
+        for (Edge edge : Neighbors) {
+            Retable.add(edge.getConnection());
+        }
+        return Retable;
+    }
 
     /**
      * @return the h
@@ -226,17 +235,15 @@ class Node {
     }
     
     public int updateg(Node N) {
+        //give g if parameter was parent
         for (Edge Neighbor : Neighbors) {
-            System.out.println(Neighbor.getConnection().getRoomName() + ", is " + N.getRoomName()+ "?");
             if (Neighbor.getConnection().equals(N)) {
-                System.out.println("Yes");
                 return N.g + Neighbor.g();
             }
-            System.out.println("No");
         }
-        System.out.println("Lazy Error Control, Update g (Node) doesn't work");
         return -1;
     }
+    //t(t-4)^(1/3)
 
     /**
      * @return the Parent

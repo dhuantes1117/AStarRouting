@@ -117,7 +117,7 @@ public class UnitTest {
         }
     }
     
-    public void adjustQueue() throws Exception {
+    /*public void adjustQueue() throws Exception {
         Node A = new Node("Origin", 1, 0);
         Node B = new Node("Left", 0, 0);        //B---A---C   E
         Node C = new Node("Right", 2, 0, true); //    D
@@ -146,7 +146,7 @@ public class UnitTest {
             throw new Exception("Queue Adjuster removed incorrect edges from consideration\n" +
                     "remaining head (By connection) is " + (Grid.QAdjuster(A, Route, E).peek().getConnection()).getRoomName());
         }
-    }
+    }*/
    
     public void tieBreaker() throws Exception{
         Node A = new Node("Origin", 0, 1, true);//C---D

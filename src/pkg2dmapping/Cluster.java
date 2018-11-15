@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
@@ -166,8 +167,13 @@ public class Cluster extends ArrayList<Node>{
         return Options.peek().getConnection();
     }
     
+    //Obselete\/\/\/\/
     public PriorityQueue<Edge> QAdjuster(Node Curr, ArrayList<Node> Route, Node Dest){
         //Not coded for true ties
+        //Point is to ignore classrooms that aren't destination & doesn't backtrack
+        //set start and dest and preform at start? (Remove directly from this)
+        //remove from each Node?
+        //
         PriorityQueue<Edge> retable = Curr.getNeighbors();
         retable.removeIf(new Predicate<Edge>() {
             @Override
@@ -182,13 +188,15 @@ public class Cluster extends ArrayList<Node>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void OpenViable(PriorityQueue<Node> O, HashSet<Node> C, Node Best, Node Dest) {
+    public void OpenViable(PriorityQueue<Node> O, HashSet<Node> C, Node Curr, Node Dest) {
         PriorityQueue<Node> O1 = new PriorityQueue<>(O);
+        O1.addAll(Curr.getNeighborNodes());
         for (Node N : O) {
-            if (O1.contains(N) && (N.updateg(Best) < N.g())) {
+            N.updateg();
+            if (O1.contains(N) && (N.updateg(Curr) < N.g())) {
                 O1.remove(N);
             }
-            N.setParent(Best);
+            N.setParent(Curr);
             N.updateg();
             N.seth(Dest);
             O1.add(N);
