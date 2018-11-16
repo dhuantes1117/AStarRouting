@@ -26,7 +26,7 @@ public class UnitTest {
             chooseLowerf();
             //adjustQueue();
             //tieBreaker();
-            //intendedRoute();
+            intendedRoute();
             //anUnreachableDestination();
         } catch (Exception e) {
             System.out.println("UnitTest has encountered an error:\n" + e.getMessage());
@@ -86,11 +86,6 @@ public class UnitTest {
         Node C = new Node("Worse", 0, 1);
         Node D = new Node("Destination", 3, 0);
         
-        System.out.println("A:" + A +
-                "\nB:" + B +
-                "\nC:" + C +
-                "\nD:" + D);
-        
         ArrayList<Edge> Ae = new ArrayList<Edge>();
         ArrayList<Edge> Be = new ArrayList<Edge>();
         ArrayList<Edge> Ce = new ArrayList<Edge>();
@@ -108,9 +103,7 @@ public class UnitTest {
         
         Cluster Grid = new Cluster(Arrays.asList(A, B, C, D));
         Grid.OPEN.add(A);
-        System.out.println(Grid.OPEN);
-        Grid.OpenViable(Grid.OPEN, Grid.CLOSED, A, D);
-        System.out.println(Grid.OPEN);
+        Grid.OPEN = Grid.OpenViable(Grid.OPEN, Grid.CLOSED, A, D);
         if (!Grid.OPEN.peek().equals(B)) {
             throw new Exception("issue with f(N) cost not correctly calculated\n"+
                     "Program decided '" + Grid.OPEN.peek().getRoomName() +"' had lowest cost");
@@ -147,7 +140,7 @@ public class UnitTest {
                     "remaining head (By connection) is " + (Grid.QAdjuster(A, Route, E).peek().getConnection()).getRoomName());
         }
     }*/
-   
+   /*
     public void tieBreaker() throws Exception{
         Node A = new Node("Origin", 0, 1, true);//C---D
         Node B = new Node("Dead End", 0, 2);    //|   |
@@ -199,7 +192,7 @@ public class UnitTest {
             throw new Exception("Tiebreak was not preformed correctly in PriorityQueue");
         }
     }
-    
+    */
     public void intendedRoute() throws Exception{
         Node A = new Node("A", 0, 1, true);     //    D               H
         Node B = new Node("B", 0, 2);           //    |               |
@@ -284,7 +277,7 @@ public class UnitTest {
         RouteTheo.add(I);
         
         try{
-            RouteActual = Grid.Astar(0, Map, 8);
+            RouteActual = Grid.RouteAstar(Grid.get(0), Grid.get(8));
             if (!RouteTheo.equals(RouteActual)) {
                 throw new Exception("Anticipated Route was not taken\nRoute taken was:\n" + Grid.routeString(RouteActual));
             }

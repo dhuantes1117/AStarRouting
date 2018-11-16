@@ -141,14 +141,13 @@ public class Cluster extends ArrayList<Node>{
             return;
         }
         C.add(Best);
-        OpenViable(O, C, Best, Dest);
+        O = OpenViable(O, C, Best, Dest);
         Astar(O, C, O.peek(), Dest);
     }
     
     public ArrayList<Node> RouteAstar (Node Start, Node Dest){
-        ArrayList<Node> Retable = new ArrayList<>();
-        
         Astar(OPEN, CLOSED, Start, Dest);
+        ArrayList<Node> Retable = new ArrayList<>();
         Retable.add(Dest);
         while(!Retable.contains(Start)) {  
             Node Last = Retable.get(Retable.size() - 1);
@@ -188,7 +187,7 @@ public class Cluster extends ArrayList<Node>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void OpenViable(PriorityQueue<Node> O, HashSet<Node> C, Node Curr, Node Dest) {
+    public PriorityQueue<Node> OpenViable(PriorityQueue<Node> O, HashSet<Node> C, Node Curr, Node Dest) {
         PriorityQueue<Node> O1 = new PriorityQueue<>(O);
         O1.addAll(Curr.getNeighborNodes());
         for (Node N : O) {
@@ -202,5 +201,6 @@ public class Cluster extends ArrayList<Node>{
             O1.add(N);
         }
         OPEN = O1;
+        return OPEN;
     }
 }
