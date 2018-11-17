@@ -105,7 +105,7 @@ public class UnitTest {
         
         Cluster Grid = new Cluster(Arrays.asList(A, B, C, D));
         Grid.OPEN.add(A);
-        Grid.OPEN = Grid.OpenViable(Grid.OPEN, Grid.CLOSED, A, D);
+        Grid.OpenViable(A, D);
         if (!Grid.OPEN.peek().equals(B)) {
             throw new Exception("issue with f(N) cost not correctly calculated\n"+
                     "Program decided '" + Grid.OPEN.peek().getRoomName() +"' had lowest cost");

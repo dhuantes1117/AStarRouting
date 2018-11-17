@@ -74,21 +74,20 @@ public class Cluster extends ArrayList<Node>{
         return A;
     }
     
-    public void Astar (PriorityQueue<Node> O, HashSet<Node> C, Node Best, Node Dest){
+    public void Astar (Node Best, Node Dest){
         if (Best.equals(Dest)){
-            C.add(Best);
-            CLOSED = C;
+            CLOSED.add(Best);
             return;
         }
-        C.add(Best);
-        O = OpenViable(O, C, Best, Dest);
-        System.out.println("The best node from Best {" + Best.getRoomName() + "} to get to Dest {" + Dest.getRoomName() + "} is " + O.peek().getRoomName());
-        System.out.println(O.peek().getRoomName() + "'s parent is [" + O.peek().getParent().getRoomName() + "] parent!");
-        Astar(O, C, O.peek(), Dest);
+        CLOSED.add(Best);
+        OpenViable(Best, Dest);
+        System.out.println("The best node from Best {" + Best.getRoomName() + "} to get to Dest {" + Dest.getRoomName() + "} is " + OPEN.peek().getRoomName());
+        System.out.println(OPEN.peek().getRoomName() + "'s parent is [" + OPEN.peek().getParent().getRoomName() + "] parent!");
+        Astar(OPEN.peek(), Dest);
     }
     
     public ArrayList<Node> RouteAstar (Node Start, Node Dest){
-        Astar(OPEN, CLOSED, Start, Dest);
+        Astar(Start, Dest);
         //Iterate through closed getting Dest's parent
         ArrayList<Node> Retable = new ArrayList<Node>();
         Retable.add(Dest);
@@ -110,8 +109,8 @@ public class Cluster extends ArrayList<Node>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public PriorityQueue<Node> OpenViable(PriorityQueue<Node> O, HashSet<Node> C, Node Curr, Node Dest) {
-        PriorityQueue<Node> O1 = new PriorityQueue<>(O);
+    public void OpenViable(Node Curr, Node Dest) {
+        PriorityQueue<Node> O1 = new PriorityQueue<>(OPEN);
         ArrayList<Node> NodeList = new ArrayList<>();
         for (int i = 0; i < O1.size(); i++) {
             NodeList.add(O1.poll());
@@ -122,7 +121,7 @@ public class Cluster extends ArrayList<Node>{
             System.out.println(i);
             Node N = NodeList.get(i);
             N.updateg();
-            if (O.contains(N) && (N.updateg(Curr) < N.g())) {
+            if (OPEN.contains(N) && (N.updateg(Curr) < N.g())) {
                 System.out.println("Removing " + N.getRoomName() + " because\n"+
                         "The updated cost from " + Curr.getRoomName() + 
                         ", {" + N.updateg(Curr) + "} is lower than the original cost of " + N.g());
@@ -133,8 +132,7 @@ public class Cluster extends ArrayList<Node>{
             N.seth(Dest);
             NodeList.add(N);
         }
-        OPEN = new PriorityQueue<Node>(c);
+        OPEN.clear();
         OPEN.addAll(NodeList);
-        return OPEN;
     }
 }
