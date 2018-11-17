@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-class Node {
+class Node{
 
     private String RoomName;
     private String ClassName;
@@ -236,6 +236,7 @@ class Node {
     
     public int updateg(Node N) {
         //give g if parameter was parent
+        //return N.g + Neighbors.peek().g();
         for (Edge Neighbor : Neighbors) {
             if (Neighbor.getConnection().equals(N)) {
                 return N.g + Neighbor.g();
@@ -243,6 +244,7 @@ class Node {
         }
         return -1;
     }
+    //Watch Forever Amazon Prime
     //t(t-4)^(1/3)
 
     /**

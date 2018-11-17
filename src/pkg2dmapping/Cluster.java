@@ -74,133 +74,67 @@ public class Cluster extends ArrayList<Node>{
         return A;
     }
     
-    //Astar will only work for Nodes with enstantiated Edges
-    //Base case: if we're done, add it to route and return
-    //if there's a tie fix the PriorityQueue
-    //add head of Queue to Route
-    //Preform Astar with head
-    /*public ArrayList<Node> Astar(Node Curr, ArrayList<Node> Route, Node Dest){
-        try {
-            if(Curr.equals(Dest)){
-                 Route.add(Dest);
-                 return Route;
-             }
-             Node Shovable;
-             //Tie handling if has been traveled to, no implemented removal of Destinations
-             if(!Route.contains(Curr.getNeighbors().peek().getConnection())){
-                Shovable = Curr.getNeighbors().peek().getConnection(); 
-             } else {
-                 PriorityQueue<Edge> temp1 = Curr.getNeighbors();
-                 temp1.remove();
-                 if (temp1.isEmpty()) {
-                     throw new StackOverflowError("Astar reached an unnavigable point");
-                 }
-                 Shovable = temp1.peek().getConnection();
-             }
-             Route.add(Shovable);
-             Astar(Shovable, Route, Dest);
-             return Route;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }*/
-    
-    /*public ArrayList<Node> Astar(Node Curr, ArrayList<Node> Route, Node Dest){
-        try {
-            if(Curr.equals(Dest)){
-                 return Route;
-            }
-            
-            Node Shovable = this.getBestNode(Curr, Route, Dest);
-            Route.add(Shovable);
-            
-            Astar(Shovable, Route, Dest);
-            
-            return Route;
-            
-        } catch (NullPointerException e) {
-            throw e;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
-    
-    public ArrayList<Node> Astar(int beg, ArrayList<Node> Route, int dest){
-        ArrayList<Node> retable = new ArrayList<Node>();
-        Node Curr = this.get(beg);
-        Node Dest = this.get(dest);
-        retable.add(Curr);
-        return Astar(Curr, retable, Dest);
-    }
-    */
     public void Astar (PriorityQueue<Node> O, HashSet<Node> C, Node Best, Node Dest){
         if (Best.equals(Dest)){
             C.add(Best);
+            CLOSED = C;
             return;
         }
         C.add(Best);
         O = OpenViable(O, C, Best, Dest);
+        System.out.println("The best node from Best {" + Best.getRoomName() + "} to get to Dest {" + Dest.getRoomName() + "} is " + O.peek().getRoomName());
+        System.out.println(O.peek().getRoomName() + "'s parent is [" + O.peek().getParent().getRoomName() + "] parent!");
         Astar(O, C, O.peek(), Dest);
     }
     
     public ArrayList<Node> RouteAstar (Node Start, Node Dest){
         Astar(OPEN, CLOSED, Start, Dest);
-        ArrayList<Node> Retable = new ArrayList<>();
+        //Iterate through closed getting Dest's parent
+        ArrayList<Node> Retable = new ArrayList<Node>();
         Retable.add(Dest);
         while(!Retable.contains(Start)) {  
             Node Last = Retable.get(Retable.size() - 1);
-            Retable.add(Last.getParent());     
+            try {
+                Retable.add(Last.getParent());
+            } catch (NullPointerException e) {
+                System.out.println(Retable);
+                System.out.println(Retable.contains(Start));
+                System.out.println(Start.getParent().getRoomName());
+                System.out.println(Last.getRoomName());
+            }    
         }
         return Retable;
     }
     
-    /*public Node getBestNode (Node Curr, ArrayList<Node> Route, Node Dest) {
-        PriorityQueue<Edge> Options = this.QAdjuster(Curr, Route, Dest);
-        if (Options.isEmpty()) {
-            System.out.println("The following Node has no remaining connections:\n"+
-                    Curr.getRoomName());
-            throw new NullPointerException();
-        }
-        return Options.peek().getConnection();
-    }
-    
-    //Obselete\/\/\/\/
-    public PriorityQueue<Edge> QAdjuster(Node Curr, ArrayList<Node> Route, Node Dest){
-        //Not coded for true ties
-        //Point is to ignore classrooms that aren't destination & doesn't backtrack
-        //set start and dest and preform at start? (Remove directly from this)
-        //remove from each Node?
-        //
-        PriorityQueue<Edge> retable = Curr.getNeighbors();
-        retable.removeIf(new Predicate<Edge>() {
-            @Override
-            public boolean test(Edge t) {
-                return (Route.contains(t.getConnection()) || (t.getConnection().isDestination() && t.getConnection() != Dest));
-            }
-        });
-        return retable;
-    }
-    */
     public void tieBreaker(Edge First, Edge Second, Node Dest) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public PriorityQueue<Node> OpenViable(PriorityQueue<Node> O, HashSet<Node> C, Node Curr, Node Dest) {
         PriorityQueue<Node> O1 = new PriorityQueue<>(O);
-        O1.addAll(Curr.getNeighborNodes());
-        for (Node N : O) {
+        ArrayList<Node> NodeList = new ArrayList<>();
+        for (int i = 0; i < O1.size(); i++) {
+            NodeList.add(O1.poll());
+        }
+        NodeList.addAll(Curr.getNeighborNodes());
+        int a = NodeList.size() - 1;
+        for (int i = 0; i < a; i++) {
+            System.out.println(i);
+            Node N = NodeList.get(i);
             N.updateg();
-            if (O1.contains(N) && (N.updateg(Curr) < N.g())) {
-                O1.remove(N);
+            if (O.contains(N) && (N.updateg(Curr) < N.g())) {
+                System.out.println("Removing " + N.getRoomName() + " because\n"+
+                        "The updated cost from " + Curr.getRoomName() + 
+                        ", {" + N.updateg(Curr) + "} is lower than the original cost of " + N.g());
+                NodeList.remove(N);
             }
             N.setParent(Curr);
             N.updateg();
             N.seth(Dest);
-            O1.add(N);
+            NodeList.add(N);
         }
-        OPEN = O1;
+        OPEN = new PriorityQueue<Node>(c);
+        OPEN.addAll(NodeList);
         return OPEN;
     }
 }
