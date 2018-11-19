@@ -24,13 +24,14 @@ public class UnitTest {
             manhattanCorrect();
             gCostCorrect();
             chooseLowerf();
+            assignParents();
             //adjustQueue();
             //tieBreaker();
             intendedRoute();
             //anUnreachableDestination();
         } catch (Exception e) {
             System.out.println("UnitTest has encountered an error:\n" + e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
             return true;
         }
         System.out.println("Unit Test has succesfully completed, no errors were detected");
@@ -104,12 +105,73 @@ public class UnitTest {
         C.setNeighbors(Ce);
         
         Cluster Grid = new Cluster(Arrays.asList(A, B, C, D));
-        Grid.OPEN.add(A);
+        Grid.CLOSED.add(A);
         Grid.OpenViable(A, D);
         if (!Grid.OPEN.peek().equals(B)) {
             throw new Exception("issue with f(N) cost not correctly calculated\n"+
                     "Program decided '" + Grid.OPEN.peek().getRoomName() +"' had lowest cost");
         }
+    }
+    
+    public void assignParents() throws Exception {
+        boolean fA, fB, fC, fD;
+        //Make a line of 4 nodes, preform Astar
+        Node A = new Node("A", 0, 1, true);     //                 
+        Node B = new Node("B", 1, 1);           //A---B---C--- --- ---D
+        Node C = new Node("C", 2, 1);           //       
+        Node D = new Node("D", 5, 1);
+
+        ArrayList<Edge> Ae = new ArrayList<Edge>();
+        ArrayList<Edge> Be = new ArrayList<Edge>();
+        ArrayList<Edge> Ce = new ArrayList<Edge>();
+        ArrayList<Edge> De = new ArrayList<Edge>();
+
+        ArrayList<Node> Map = new ArrayList<Node>();
+
+        Cluster Grid;
+
+        A.seth(D);
+        B.seth(D);
+        C.seth(D);
+        D.seth(D);
+
+        Ae.add(new Edge(B, 1));
+        Be.add(new Edge(A, 1));
+        Be.add(new Edge(C, 1));
+        Ce.add(new Edge(B, 1));
+        Ce.add(new Edge(D, 3));
+        De.add(new Edge(C, 3));
+
+        A.setNeighbors(Ae);
+        B.setNeighbors(Be);
+        C.setNeighbors(Ce);
+        D.setNeighbors(De);
+
+        Map.add(A);
+        Map.add(B);
+        Map.add(C);
+        Map.add(D);
+
+        Grid = new Cluster(Map);
+        
+        A.setParent(A);
+        
+        Grid.Astar(A, D);
+        
+        fA = (A.getParent().equals(A));
+        fB = (B.getParent().equals(A));
+        fC = C.getParent().equals(B);
+        fD = (D.getParent().equals(C));
+        if (!(fA && fB && fC && fD)) {
+            throw new Exception("Parents were not assigned correctly\nA's parent was " + A.getParent().getRoomName()
+            + "\nB's parent was " + B.getParent().getRoomName() + "\nC's parent was " + C.getParent().getRoomName()
+                    + "\nD's parent was " + D.getParent().getRoomName());
+        }
+    }
+    
+    public void tieBreaker() throws Exception {
+        //work with comparator in OPEN priorityQueue to preform openviable (and maybe something else?)
+        //on everything that ties
     }
     
     public void intendedRoute() throws Exception{
@@ -235,7 +297,7 @@ public class UnitTest {
         Grid.addAll(Arrays.asList(A, B, C));
         
         try {
-            Route = Grid.Astar(0, Route, 2);
+//            Route = Grid.Astar(0, Route, 2);
         } catch (NullPointerException e) {
             return;
         }

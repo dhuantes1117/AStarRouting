@@ -80,27 +80,19 @@ public class Cluster extends ArrayList<Node>{
             return;
         }
         CLOSED.add(Best);
-        OpenViable(Best, Dest);
-        System.out.println("The best node from Best {" + Best.getRoomName() + "} to get to Dest {" + Dest.getRoomName() + "} is " + OPEN.peek().getRoomName());
-        System.out.println(OPEN.peek().getRoomName() + "'s parent is [" + OPEN.peek().getParent().getRoomName() + "] parent!");
-        Astar(OPEN.peek(), Dest);
+        OpenViable(Best, Dest);Astar(OPEN.poll(), Dest);
     }
     
     public ArrayList<Node> RouteAstar (Node Start, Node Dest){
+        //Start.getNeighborNodes().forEach((N) -> System.out.print(N.getRoomName() + " - "));
+        Start.setParent(Start);
         Astar(Start, Dest);
         //Iterate through closed getting Dest's parent
         ArrayList<Node> Retable = new ArrayList<Node>();
         Retable.add(Dest);
         while(!Retable.contains(Start)) {  
-            Node Last = Retable.get(Retable.size() - 1);
-            try {
-                Retable.add(Last.getParent());
-            } catch (NullPointerException e) {
-                System.out.println(Retable);
-                System.out.println(Retable.contains(Start));
-                System.out.println(Start.getParent().getRoomName());
-                System.out.println(Last.getRoomName());
-            }    
+            Node Last = Retable.get(0);
+            Retable.add(0, Last.getParent());
         }
         return Retable;
     }
@@ -115,16 +107,16 @@ public class Cluster extends ArrayList<Node>{
         for (int i = 0; i < O1.size(); i++) {
             NodeList.add(O1.poll());
         }
-        NodeList.addAll(Curr.getNeighborNodes());
-        int a = NodeList.size() - 1;
-        for (int i = 0; i < a; i++) {
-            System.out.println(i);
-            Node N = NodeList.get(i);
+        ArrayList<Node> ApplicableNeighbors = Curr.getNeighborNodes();
+        ApplicableNeighbors.removeIf(new Predicate<Node>() {
+            @Override
+            public boolean test(Node N) {
+                return CLOSED.contains(N);
+            }
+        });
+        for (Node N : ApplicableNeighbors) {
             N.updateg();
             if (OPEN.contains(N) && (N.updateg(Curr) < N.g())) {
-                System.out.println("Removing " + N.getRoomName() + " because\n"+
-                        "The updated cost from " + Curr.getRoomName() + 
-                        ", {" + N.updateg(Curr) + "} is lower than the original cost of " + N.g());
                 NodeList.remove(N);
             }
             N.setParent(Curr);
