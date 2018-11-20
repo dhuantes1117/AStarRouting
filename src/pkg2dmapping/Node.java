@@ -173,7 +173,7 @@ class Node{
     public void sethManhattan(Node Dest) {
         seth(Math.abs(Dest.x() - this.x()) + Math.abs(Dest.y() - this.y()));
     }
-
+    
     public void seth(Node Dest) {
         sethManhattan(Dest);
     }

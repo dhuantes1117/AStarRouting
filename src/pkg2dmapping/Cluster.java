@@ -112,8 +112,12 @@ public class Cluster extends ArrayList<Node>{
         ApplicableNeighbors.removeIf(inCLOSED);
         for (Node N : ApplicableNeighbors) {
             N.updateg();
-            if (OPEN.contains(N) && (N.updateg(Curr) < N.g())) {
-                OPEN.remove(N);
+            if (OPEN.contains(N)) {
+                if (N.updateg(Curr) < N.g()) {
+                    OPEN.remove(N);
+                } else if (N.updateg(Curr) > N.g()) {
+                    continue;
+                }
             }
             N.setParent(Curr);
             N.updateg();
@@ -123,7 +127,7 @@ public class Cluster extends ArrayList<Node>{
     }
     
     public void connect(Node A, Node B){
-        int distance = (int) Math.round(Math.hypot(Math.abs(B.x()-A.x()), Math.abs(B.y()-A.y())));
+        int distance = (int) Math.round(Math.hypot(B.x() - A.x(), B.y() - A.y()));
         A.getNeighbors().add(new Edge(B, distance));
         B.getNeighbors().add(new Edge(A, distance));
     }

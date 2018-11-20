@@ -47,8 +47,8 @@ public class MappingMethods {
         ArrayList<Node> Route = new ArrayList<Node>();
         Cluster Grid = generateMap();
         Route = Grid.routeAstar(Grid.get(0), Grid.get(9));
-        for (int i = Route.size() -1; i > 0; i--) {
-            System.out.println(Route.get(i).getRoomName() + " - ");
+        for (Node N : Route) {
+            System.out.println(N.getRoomName() + " (" + N.f() + "),");
         }
         
     }
@@ -102,8 +102,8 @@ public class MappingMethods {
         retable.connect(G, I);
         retable.connect(H, K);
         retable.connect(I, J);
-        retable.connect(K, H);
         
         return retable;
+        
     }
 }
