@@ -43,6 +43,12 @@ public class Cluster extends ArrayList<Node>{
     };
     PriorityQueue<Node> OPEN = new PriorityQueue<>(c);
     HashSet<Node> CLOSED = new HashSet<>();
+    Predicate<Node> inCLOSED = new Predicate<Node>() {
+            @Override
+            public boolean test(Node N) {
+                return CLOSED.contains(N);
+            }
+        };
     
     
     public Cluster(){
@@ -80,10 +86,10 @@ public class Cluster extends ArrayList<Node>{
             return;
         }
         CLOSED.add(Best);
-        OpenViable(Best, Dest);Astar(OPEN.poll(), Dest);
+        openViable(Best, Dest);Astar(OPEN.poll(), Dest);
     }
     
-    public ArrayList<Node> RouteAstar (Node Start, Node Dest){
+    public ArrayList<Node> routeAstar (Node Start, Node Dest){
         //Start.getNeighborNodes().forEach((N) -> System.out.print(N.getRoomName() + " - "));
         Start.setParent(Start);
         Astar(Start, Dest);
@@ -101,30 +107,24 @@ public class Cluster extends ArrayList<Node>{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void OpenViable(Node Curr, Node Dest) {
-        PriorityQueue<Node> O1 = new PriorityQueue<>(OPEN);
-        ArrayList<Node> NodeList = new ArrayList<>();
-        for (int i = 0; i < O1.size(); i++) {
-            NodeList.add(O1.poll());
-        }
+    public void openViable(Node Curr, Node Dest) {
         ArrayList<Node> ApplicableNeighbors = Curr.getNeighborNodes();
-        ApplicableNeighbors.removeIf(new Predicate<Node>() {
-            @Override
-            public boolean test(Node N) {
-                return CLOSED.contains(N);
-            }
-        });
+        ApplicableNeighbors.removeIf(inCLOSED);
         for (Node N : ApplicableNeighbors) {
             N.updateg();
             if (OPEN.contains(N) && (N.updateg(Curr) < N.g())) {
-                NodeList.remove(N);
+                OPEN.remove(N);
             }
             N.setParent(Curr);
             N.updateg();
             N.seth(Dest);
-            NodeList.add(N);
+            OPEN.add(N);
         }
-        OPEN.clear();
-        OPEN.addAll(NodeList);
+    }
+    
+    public void connect(Node A, Node B){
+        int distance = (int) Math.round(Math.hypot(Math.abs(B.x()-A.x()), Math.abs(B.y()-A.y())));
+        A.getNeighbors().add(new Edge(B, distance));
+        B.getNeighbors().add(new Edge(A, distance));
     }
 }

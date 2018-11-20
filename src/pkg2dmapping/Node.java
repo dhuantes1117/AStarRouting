@@ -8,10 +8,14 @@ import java.util.HashSet;
 import java.util.List;
 
 class Node{
-
+    
+    private int x;
+    private int y;
+    private int g;
+    private int h;
+    private boolean origin;
     private String RoomName;
     private String ClassName;
-    private PriorityQueue<Edge> Neighbors;
     private Node Parent;
     private final Comparator<Edge> c = new Comparator<Edge>() {
         @Override
@@ -38,11 +42,7 @@ class Node{
             }
         }
     };
-    private int x;
-    private int y;
-    private int g;
-    private int h;
-    private boolean origin;
+    private PriorityQueue<Edge> Neighbors = new PriorityQueue<>(c);
 
     public Node(String RoomName, String ClassName, int x, int y, int h, ArrayList<Edge> Neighbors, boolean destination) {
         this.RoomName = RoomName;

@@ -25,10 +25,9 @@ public class UnitTest {
             gCostCorrect();
             chooseLowerf();
             assignParents();
-            //adjustQueue();
-            //tieBreaker();
+            tieBreaker();
             intendedRoute();
-            //anUnreachableDestination();
+            anUnreachableDestination();
         } catch (Exception e) {
             System.out.println("UnitTest has encountered an error:\n" + e.getMessage());
             //e.printStackTrace();
@@ -106,7 +105,7 @@ public class UnitTest {
         
         Cluster Grid = new Cluster(Arrays.asList(A, B, C, D));
         Grid.CLOSED.add(A);
-        Grid.OpenViable(A, D);
+        Grid.openViable(A, D);
         if (!Grid.OPEN.peek().equals(B)) {
             throw new Exception("issue with f(N) cost not correctly calculated\n"+
                     "Program decided '" + Grid.OPEN.peek().getRoomName() +"' had lowest cost");
@@ -167,11 +166,6 @@ public class UnitTest {
             + "\nB's parent was " + B.getParent().getRoomName() + "\nC's parent was " + C.getParent().getRoomName()
                     + "\nD's parent was " + D.getParent().getRoomName());
         }
-    }
-    
-    public void tieBreaker() throws Exception {
-        //work with comparator in OPEN priorityQueue to preform openviable (and maybe something else?)
-        //on everything that ties
     }
     
     public void intendedRoute() throws Exception{
@@ -258,7 +252,7 @@ public class UnitTest {
         RouteTheo.add(I);
         
         try{
-            RouteActual = Grid.RouteAstar(Grid.get(0), Grid.get(8));
+            RouteActual = Grid.routeAstar(Grid.get(0), Grid.get(8));
             if (!RouteTheo.equals(RouteActual)) {
                 throw new Exception("Anticipated Route was not taken\nRoute taken was:\n" + Grid.routeString(RouteActual));
             }
@@ -266,6 +260,111 @@ public class UnitTest {
         } catch (StackOverflowError e) {
             throw new Exception("Inteded Destination was never reached");
         }
+    }
+    
+    public void tieBreaker() throws Exception {
+        //work with comparator in OPEN priorityQueue to preform openviable (and maybe something else?)
+        //on everything that ties
+        Node A = new Node("A", 0, 1, true);     //B---C---D---E
+        Node B = new Node("B", 0, 0);           //|           |
+        Node C = new Node("C", 1, 0);           //A           F
+        Node D = new Node("D", 2, 0);           //|       
+        Node E = new Node("E", 3, 0);           //G---H---I---J
+        Node F = new Node("F", 3, 1);
+        Node G = new Node("G", 0, 2);
+        Node H = new Node("H", 1, 2);
+        Node I = new Node("I", 2, 2);
+        Node J = new Node("J", 3, 2);
+
+        ArrayList<Edge> Ae = new ArrayList<Edge>();
+        ArrayList<Edge> Be = new ArrayList<Edge>();
+        ArrayList<Edge> Ce = new ArrayList<Edge>();
+        ArrayList<Edge> De = new ArrayList<Edge>();
+        ArrayList<Edge> Ee = new ArrayList<Edge>();
+        ArrayList<Edge> Fe = new ArrayList<Edge>();
+        ArrayList<Edge> Ge = new ArrayList<Edge>();
+        ArrayList<Edge> He = new ArrayList<Edge>();
+        ArrayList<Edge> Ie = new ArrayList<Edge>();
+        ArrayList<Edge> Je = new ArrayList<Edge>();
+
+        ArrayList<Node> Map = new ArrayList<Node>();
+        ArrayList<Node> Route = new ArrayList<Node>();
+        ArrayList<Node> RouteTheo = new ArrayList<Node>();
+
+        Cluster Grid;
+
+        A.seth(F);
+        B.seth(F);
+        C.seth(F);
+        D.seth(F);
+        E.seth(F);
+        F.seth(F);
+        G.seth(F);
+        H.seth(F);
+        I.seth(F);
+        J.seth(F);
+
+        Ae.add(new Edge(B, 1));
+        Ae.add(new Edge(G, 1));
+        Be.add(new Edge(A, 1));
+        Be.add(new Edge(C, 1));
+        Ce.add(new Edge(B, 1));
+        Ce.add(new Edge(D, 1));
+        De.add(new Edge(C, 1));
+        De.add(new Edge(E, 1));
+        Ee.add(new Edge(D, 1));
+        Ee.add(new Edge(F, 1));
+        Fe.add(new Edge(E, 1));
+        Ge.add(new Edge(A, 1));
+        Ge.add(new Edge(H, 1));
+        He.add(new Edge(G, 1));
+        He.add(new Edge(I, 1));
+        Ie.add(new Edge(H, 1));
+        Ie.add(new Edge(J, 1));
+        Je.add(new Edge(I, 1));
+
+
+        A.setNeighbors(Ae);
+        B.setNeighbors(Be);
+        C.setNeighbors(Ce);
+        D.setNeighbors(De);
+        E.setNeighbors(Ee);
+        F.setNeighbors(Fe);
+        G.setNeighbors(Ge);
+        H.setNeighbors(He);
+        I.setNeighbors(Ie);
+        J.setNeighbors(Je);
+
+        Map.add(A);
+        Map.add(B);
+        Map.add(C);
+        Map.add(D);
+        Map.add(E);
+        Map.add(F);
+        Map.add(G);
+        Map.add(H);
+        Map.add(I);
+        Map.add(J);
+        
+        RouteTheo.add(A);
+        RouteTheo.add(B);
+        RouteTheo.add(C);
+        RouteTheo.add(D);
+        RouteTheo.add(E);
+        RouteTheo.add(F);
+
+        Grid = new Cluster(Map);
+        
+        try {
+            Route = Grid.routeAstar(A, F);
+        } catch (Exception e) {
+            System.out.println("An error was caused by a long tie");
+        }
+        
+        if (!Route.equals(RouteTheo)) {
+            throw new Exception("tieBreaker resulted in a nonintended route being taken");
+        }
+        
     }
     
     public void anUnreachableDestination() throws Exception{
@@ -297,7 +396,7 @@ public class UnitTest {
         Grid.addAll(Arrays.asList(A, B, C));
         
         try {
-//            Route = Grid.Astar(0, Route, 2);
+            Route = Grid.routeAstar(A, C);
         } catch (NullPointerException e) {
             return;
         }
