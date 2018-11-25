@@ -47,9 +47,9 @@ public class MappingMethods {
         ArrayList<Node> Route = new ArrayList<Node>();
         Cluster Grid = generateMap();
         Route = Grid.routeAstar(Grid.get(0), Grid.get(9));
-        for (Node N : Route) {
-            System.out.println(N.getRoomName() + " (" + N.f() + "),");
-        }
+        System.out.println(Grid.routeString(Route));
+        Route = Grid.routeAstar(Grid.closest(0, 0), Grid.closest(12, 3));
+        System.out.println(Grid.routeString(Route));
         
     }
     //recurTHIS(Node curr, ArrayList<Node>/Set<Node> Stack, Node destination)

@@ -5,8 +5,13 @@
  */
 package pkg2dmapping;
 
+import java.io.File;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,6 +68,14 @@ public class Cluster extends ArrayList<Node>{
         this.addAll(a);
     }
     
+    public Cluster(String fileLoc) throws Exception{
+        this.generate(fileLoc);
+    }
+    
+    public Cluster(BufferedImage img) throws Exception{
+        this.generate(img);
+    }
+    
     public void print(ArrayList<Node> Route){
         System.out.println("Begin:");
         for (int i = 0; i < Route.size(); i++) {
@@ -92,6 +105,7 @@ public class Cluster extends ArrayList<Node>{
     
     public ArrayList<Node> routeAstar (Node Start, Node Dest){
         //Start.getNeighborNodes().forEach((N) -> System.out.print(N.getRoomName() + " - "));
+        Start.setOrigin(true);
         Start.setParent(Start);
         Astar(Start, Dest);
         //Iterate through closed getting Dest's parent
@@ -101,6 +115,7 @@ public class Cluster extends ArrayList<Node>{
             Node Last = Retable.get(0);
             Retable.add(0, Last.getParent());
         }
+        reset();
         return Retable;
     }
     
@@ -128,8 +143,118 @@ public class Cluster extends ArrayList<Node>{
     }
     
     public void connect(Node A, Node B){
-        int distance = (int) Math.round(Math.hypot(B.x() - A.x(), B.y() - A.y()));
-        A.getNeighbors().add(new Edge(B, distance));
-        B.getNeighbors().add(new Edge(A, distance));
+        if (!A.getNeighborNodes().contains(B) && !B.getNeighborNodes().contains(A)) {
+            int distance = (int) Math.round(Math.hypot(B.x() - A.x(), B.y() - A.y()));
+            A.getNeighbors().add(new Edge(B, distance));
+            B.getNeighbors().add(new Edge(A, distance));
+        } else if (!A.getNeighborNodes().contains(B) && B.getNeighborNodes().contains(A)) {
+            System.out.println("Yikes");
+        } else if (A.getNeighborNodes().contains(B) && !B.getNeighborNodes().contains(A)) {
+            System.out.println("Yikes (Pt. 2)");
+        }
+        //Lazy error control is ok for early implementation
+    }
+
+    public void reset() {
+        this.forEach((N) -> N.setOrigin(false));
+        OPEN = new PriorityQueue<>(c);
+        CLOSED = new HashSet<>();
+    }
+    
+    public Node closest(double x, double y){
+        double min = Double.MAX_VALUE;
+        double dist;
+        Node retable = this.get(0);
+        for (int i = 0; i < this.size(); i++) {
+            Node N = this.get(i);
+            dist = (Math.abs(N.x() - x)+Math.abs(N.y() - y));
+            if (dist < min) {
+                min = dist;
+                retable = N;
+            }
+        }
+        return retable;
+    }
+    
+    private BufferedImage generateBuferredImage (String fileLoc) throws Exception {
+        BufferedImage img = null;
+        File f = null;
+
+        //read image
+        try {
+            f = new File(fileLoc);
+            img = ImageIO.read(f);
+        } catch (IOException e) {
+            throw new Exception("File was unreadable");
+        }
+        return img;
+    }
+    
+    private Node[][] generateNodeArray (BufferedImage img){
+        int rgb;
+        int a;
+        int r;
+        int g;
+        int b;
+        int height = img.getHeight();
+        int width = img.getWidth();
+        boolean started = false;
+        boolean ended = true;
+        Node[][] retable = new Node[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                rgb = img.getRGB(i, j);
+                a = (rgb>>24) & 0xff;
+                r = (rgb>>16) & 0xff;
+                g = (rgb>>8) & 0xff;
+                b = rgb & 0xff;
+                if ((r + g + b) == 0){
+                    retable[i][j] = new Node("TNLA (" + i + "," + j + ")", i * 10, j * 10);
+                } else if (((g + b) == 0) && (r == 255) && !ended){
+                    retable[i][j] = new Node("Dest", i, j);
+                    ended = true;
+                } else if (((r + b) == 0) && (g == 255) && !started){
+                    retable[i][j] = new Node("Start", i, j);
+                    started = false;
+                }
+            }
+        }
+        return retable;
+    }
+    
+    private ArrayList<Node> generateMap (Node[][] tempGrid) throws Exception{
+        ArrayList<Node> retable = new ArrayList<>();
+        boolean hit = false;
+        for (int i = 0; i < tempGrid.length; i++) {
+            for (int j = 0; j < tempGrid.length; j++) {
+                try {
+                    Node N = tempGrid[i][j];
+                    this.connect(N, tempGrid[i - 1][j - 1]);
+                    this.connect(N, tempGrid[i - 1][j]);
+                    this.connect(N, tempGrid[i - 1][j + 1]);
+                    this.connect(N, tempGrid[i + 1][j - 1]);
+                    this.connect(N, tempGrid[i + 1][j]);
+                    this.connect(N, tempGrid[i + 1][j + 1]);
+                    this.connect(N, tempGrid[i][j + 1]);
+                    this.connect(N, tempGrid[i][j - 1]);
+                    retable.add(N);
+                    hit = true;
+                } catch (NullPointerException e) {
+                }
+            }
+        }
+        if (hit) {
+            return retable;
+        } else {
+           throw new Exception("generateMap couldn't make a map"); 
+        }
+    }
+    
+    private void generate(BufferedImage img) throws Exception {
+        this.addAll(generateMap(generateNodeArray(img)));
+    }
+    
+    private void generate(String fileLoc) throws Exception {
+        this.addAll(generateMap(generateNodeArray(generateBuferredImage(fileLoc))));
     }
 }
