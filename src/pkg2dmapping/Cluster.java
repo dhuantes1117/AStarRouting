@@ -54,6 +54,8 @@ public class Cluster extends ArrayList<Node>{
                 return CLOSED.contains(N);
             }
         };
+    private File F;
+    private BufferedImage Map;
     
     
     public Cluster(){
@@ -154,6 +156,19 @@ public class Cluster extends ArrayList<Node>{
         }
         //Lazy error control is ok for early implementation
     }
+    
+    public void connectAdjacent(Node N, Node[][] tempGrid, int i, int j){
+        for (int k = -1; k < 2; k++) {
+            for (int l = -1; l < 2; l++) {
+                try {
+                    if (!N.equals(tempGrid[k + i][j + l])) {
+                        this.connect(N, tempGrid[k + i][j + l]);
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
 
     public void reset() {
         this.forEach((N) -> N.setOrigin(false));
@@ -183,14 +198,18 @@ public class Cluster extends ArrayList<Node>{
         //read image
         try {
             f = new File(fileLoc);
-            img = ImageIO.read(f);
+            for (File map : f.listFiles()) {
+                img = ImageIO.read(map);
+            }
         } catch (IOException e) {
-            throw new Exception("File was unreadable");
+            throw new Exception(e.getMessage());
         }
+        this.setF(f);
+        this.setMap(img);
         return img;
     }
     
-    private Node[][] generateNodeArray (BufferedImage img){
+    private Node[][] generateNodeArray (BufferedImage img) throws Exception{
         int rgb;
         int a;
         int r;
@@ -199,7 +218,7 @@ public class Cluster extends ArrayList<Node>{
         int height = img.getHeight();
         int width = img.getWidth();
         boolean started = false;
-        boolean ended = true;
+        boolean ended = false;
         Node[][] retable = new Node[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -208,16 +227,21 @@ public class Cluster extends ArrayList<Node>{
                 r = (rgb>>16) & 0xff;
                 g = (rgb>>8) & 0xff;
                 b = rgb & 0xff;
-                if ((r + g + b) == 0){
+                if ((r + g + b) == (255*3)){
                     retable[i][j] = new Node("TNLA (" + i + "," + j + ")", i * 10, j * 10);
                 } else if (((g + b) == 0) && (r == 255) && !ended){
                     retable[i][j] = new Node("Dest", i, j);
                     ended = true;
                 } else if (((r + b) == 0) && (g == 255) && !started){
                     retable[i][j] = new Node("Start", i, j);
-                    started = false;
+                    started = true;
                 }
             }
+        }
+        if (!started) {
+            throw new Exception("No node was indicated as start");
+        } else if (!ended) {
+            throw new Exception("No node was indicated as end");
         }
         return retable;
     }
@@ -227,20 +251,13 @@ public class Cluster extends ArrayList<Node>{
         boolean hit = false;
         for (int i = 0; i < tempGrid.length; i++) {
             for (int j = 0; j < tempGrid.length; j++) {
-                try {
-                    Node N = tempGrid[i][j];
-                    this.connect(N, tempGrid[i - 1][j - 1]);
-                    this.connect(N, tempGrid[i - 1][j]);
-                    this.connect(N, tempGrid[i - 1][j + 1]);
-                    this.connect(N, tempGrid[i + 1][j - 1]);
-                    this.connect(N, tempGrid[i + 1][j]);
-                    this.connect(N, tempGrid[i + 1][j + 1]);
-                    this.connect(N, tempGrid[i][j + 1]);
-                    this.connect(N, tempGrid[i][j - 1]);
-                    retable.add(N);
-                    hit = true;
-                } catch (NullPointerException e) {
+                Node N = tempGrid[i][j];
+                if (N == null) {
+                    continue;
                 }
+                this.connectAdjacent(N, tempGrid, i, j);
+                retable.add(N);
+                hit = true;
             }
         }
         if (hit) {
@@ -256,5 +273,51 @@ public class Cluster extends ArrayList<Node>{
     
     private void generate(String fileLoc) throws Exception {
         this.addAll(generateMap(generateNodeArray(generateBuferredImage(fileLoc))));
+    }
+    
+    public Node getStart(){
+        for (Node N : this) {
+            if (N.getRoomName() == "Start") {
+                return N;
+            }
+        }
+        return null;
+    }
+    
+    public Node getDest(){
+        for (Node N : this) {
+            if (N.getRoomName() == "Dest") {
+                return N;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return the F
+     */
+    public File getF() {
+        return F;
+    }
+
+    /**
+     * @param F the F to set
+     */
+    public void setF(File F) {
+        this.F = F;
+    }
+
+    /**
+     * @return the Map
+     */
+    public BufferedImage getMap() {
+        return Map;
+    }
+
+    /**
+     * @param Map the Map to set
+     */
+    public void setMap(BufferedImage Map) {
+        this.Map = Map;
     }
 }
