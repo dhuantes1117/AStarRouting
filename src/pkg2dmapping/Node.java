@@ -14,6 +14,7 @@ class Node{
     private int g;
     private int h;
     private boolean origin;
+    private boolean classroom;
     private String RoomName;
     private String ClassName;
     private Node Parent;
@@ -270,5 +271,26 @@ class Node{
     
     public int f() {
         return this.g + this.h;
+    }
+
+    /**
+     * @return the classroom
+     */
+    public boolean isClassroom() {
+        return classroom;
+    }
+
+    /**
+     * @param origin the origin to set
+     */
+    public void setOrigin(boolean origin) {
+        this.origin = origin;
+    }
+
+    /**
+     * @param classroom the classroom to set
+     */
+    public void setClassroom(boolean classroom) {
+        this.classroom = classroom;
     }
 }

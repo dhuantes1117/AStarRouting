@@ -86,7 +86,8 @@ public class Cluster extends ArrayList<Node>{
             return;
         }
         CLOSED.add(Best);
-        openViable(Best, Dest);Astar(OPEN.poll(), Dest);
+        openViable(Best, Dest);
+        Astar(OPEN.poll(), Dest);
     }
     
     public ArrayList<Node> routeAstar (Node Start, Node Dest){
