@@ -50,11 +50,19 @@ public class MappingMethods {
         System.out.println(Grid.routeString(Route));
         Route = Grid.routeAstar(Grid.closest(0, 0), Grid.closest(12, 3));
         System.out.println(Grid.routeString(Route));
-        Cluster Grid2 = new Cluster("/home/dhuant/NetBeansProjects/Ruby/2DMapping/maps");
+        Cluster Grid2 = new Cluster("/home/dhuant/NetBeansProjects/Ruby/2DMapping/maps/currentMap/");
+        for (Node N : Grid2) {
+            try {
+                System.out.println(N.getRoomName());
+            } catch (NullPointerException e) {
+                System.out.println("A Blank Node I Suppose");
+            }
+        }
         System.out.println(Grid2.getStart().x() + ", " + Grid2.getStart().y());
         System.out.println(Grid2.getDest().x() + ", " + Grid2.getDest().y());
         Route = Grid2.routeAstar(Grid2.getStart(), Grid2.getDest());
         System.out.println(Grid2.routeString(Route));
+        Grid2.drawRoute(Route);
     }
     //recurTHIS(Node curr, ArrayList<Node>/Set<Node> Stack, Node destination)
     //Keep multiple stacks open for true A*, abstraction, I do not believe it is needed

@@ -8,6 +8,7 @@ package pkg2dmapping;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
+import java.nio.file.Files;
 import javax.imageio.ImageIO;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -200,11 +201,11 @@ public class Cluster extends ArrayList<Node>{
             f = new File(fileLoc);
             for (File map : f.listFiles()) {
                 img = ImageIO.read(map);
+                this.setF(map);
             }
         } catch (IOException e) {
             throw new Exception(e.getMessage());
         }
-        this.setF(f);
         this.setMap(img);
         return img;
     }
@@ -217,11 +218,12 @@ public class Cluster extends ArrayList<Node>{
         int b;
         int height = img.getHeight();
         int width = img.getWidth();
+        System.out.println("Height is " + height + "\nWidth is " + width);
         boolean started = false;
         boolean ended = false;
-        Node[][] retable = new Node[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        Node[][] retable = new Node[width][height];
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 rgb = img.getRGB(i, j);
                 a = (rgb>>24) & 0xff;
                 r = (rgb>>16) & 0xff;
@@ -230,10 +232,10 @@ public class Cluster extends ArrayList<Node>{
                 if ((r + g + b) == (255*3)){
                     retable[i][j] = new Node("TNLA (" + i + "," + j + ")", i * 10, j * 10);
                 } else if (((g + b) == 0) && (r == 255) && !ended){
-                    retable[i][j] = new Node("Dest", i, j);
+                    retable[i][j] = new Node("Dest", i * 10, j * 10);
                     ended = true;
                 } else if (((r + b) == 0) && (g == 255) && !started){
-                    retable[i][j] = new Node("Start", i, j);
+                    retable[i][j] = new Node("Start", i * 10, j * 10);
                     started = true;
                 }
             }
@@ -250,7 +252,7 @@ public class Cluster extends ArrayList<Node>{
         ArrayList<Node> retable = new ArrayList<>();
         boolean hit = false;
         for (int i = 0; i < tempGrid.length; i++) {
-            for (int j = 0; j < tempGrid.length; j++) {
+            for (int j = 0; j < tempGrid[i].length; j++) {
                 Node N = tempGrid[i][j];
                 if (N == null) {
                     continue;
@@ -319,5 +321,29 @@ public class Cluster extends ArrayList<Node>{
      */
     public void setMap(BufferedImage Map) {
         this.Map = Map;
+    }
+    
+    public void drawRoute(ArrayList<Node> Route) throws IOException{
+        for (Node N : Route) {
+            if (N.getRoomName() == "Dest") {
+                break;
+            }
+            int a = 0;
+            int r = 255;
+            int g = 175;
+            int b = 0;
+            int p = (a<<24) | (r<<16) | (g<<8) | b;
+            if (N.x()/10 == 1) {
+                if (N.y()/10 == 2) {
+                    //Start isn't included in Route (PERHAPS) and so it's xy isnt correct but its never come up
+                    //EXCEPT When drawing the route when the ghost pixel is actual where Start preports to be
+                    System.out.println("What is your problem " + N.getRoomName().hashCode());
+                    System.out.println("What is your problem " + this.getStart().getRoomName().hashCode());
+                }
+            }
+            Map.setRGB(N.x()/10, N.y()/10, p);
+        }
+        File drawn = new File("/home/dhuant/NetBeansProjects/Ruby/2DMapping/maps/drawnMaps/" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
+        ImageIO.write(Map, "png", drawn);
     }
 }
