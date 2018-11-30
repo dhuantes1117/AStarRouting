@@ -1,4 +1,4 @@
-        package pkg2dmapping;
+package pkg2dmapping;
 
 public class Edge {
 

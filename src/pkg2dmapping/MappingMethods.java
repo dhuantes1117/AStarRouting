@@ -29,19 +29,6 @@ public class MappingMethods {
         if(Nevada.runAllTests()){
             return;
         }
-        /*
-        Remember: While the school will be hardcoded, the destination will change
-        using the constructor to set up a destination is only for
-        
-        Code Pragmatically a way to break ties without writing the actual meat
-        and potatoes of the method. Once the noded map of reagan is available
-        it will become what types of ties are possible and impossible, including
-        ones A* will prevent. While necessary for error checking of a more
-        moddable program, extensive tiebreaking maybe not even an issue
-        */
-        /*File writableTextFile = new File("writeTo.txt");
-        BufferedWriter Writer = new BufferedWriter(new FileWriter(writableTextFile));
-        */
         Cluster Map = generateMap();
         
         ArrayList<Node> Route = new ArrayList<Node>();
@@ -51,17 +38,10 @@ public class MappingMethods {
         Route = Grid.routeAstar(Grid.closest(0, 0), Grid.closest(12, 3));
         System.out.println(Grid.routeString(Route));
         Cluster Grid2 = new Cluster("/home/dhuant/NetBeansProjects/Ruby/2DMapping/maps/currentMap/");
-        for (Node N : Grid2) {
-            try {
-                System.out.println(N.getRoomName());
-            } catch (NullPointerException e) {
-                System.out.println("A Blank Node I Suppose");
-            }
-        }
         System.out.println(Grid2.getStart().x() + ", " + Grid2.getStart().y());
         System.out.println(Grid2.getDest().x() + ", " + Grid2.getDest().y());
         Route = Grid2.routeAstar(Grid2.getStart(), Grid2.getDest());
-        System.out.println(Grid2.routeString(Route));
+        //System.out.println(Grid2.routeString(Route));
         Grid2.drawRoute(Route);
     }
     //recurTHIS(Node curr, ArrayList<Node>/Set<Node> Stack, Node destination)

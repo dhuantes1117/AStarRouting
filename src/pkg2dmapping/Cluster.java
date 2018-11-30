@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pkg2dmapping;
 
 import java.io.File;
@@ -103,14 +98,55 @@ public class Cluster extends ArrayList<Node>{
         }
         CLOSED.add(Best);
         openViable(Best, Dest);
+//        if (Multiple ties) {
+//            while   still a tie
+//            Astar(Open.poll(), Dest)
+//        }
         Astar(OPEN.poll(), Dest);
+    }
+    
+    public void AstarB1 (Node Best, Node Dest){
+        CLOSED.add(Best);
+        openViable(Best, Dest);
+    }
+    
+    public void AstarBORING (Node Best, Node Dest){
+        ArrayList<Node> Considerable = new ArrayList<>();
+        int counter = 0;
+        AstarB1(Best, Dest);
+        while(!OPEN.peek().equals(Dest)) {
+            counter++;
+            System.out.println("NOT DONE YET CHECK IN LATER");
+            System.out.println(OPEN.peek().getRoomName());
+            //if OPEN.peek() results in a tie, preform Astar (ONCE) on each polled Node with a constant f cost
+            int currentBestfCost = OPEN.peek().f();
+            System.out.println("Current best cost is " + currentBestfCost + " for");
+            int y = 0;
+            System.out.println("Size of Open is: " + OPEN.size());
+            do {      
+                System.out.println(y++);
+                if (!CLOSED.contains(OPEN.peek())) {
+                    Considerable.add(OPEN.poll());
+                }
+                if (OPEN.peek() == null) {
+                    break;
+                }
+            } while (currentBestfCost == OPEN.peek().f());
+            Considerable.forEach(N -> AstarB1(N, Dest));
+            if (counter > 300) {
+                Dest.setParent(OPEN.poll());
+                return;
+            }
+        }
+        CLOSED.add(OPEN.poll());
+        
     }
     
     public ArrayList<Node> routeAstar (Node Start, Node Dest){
         //Start.getNeighborNodes().forEach((N) -> System.out.print(N.getRoomName() + " - "));
         Start.setOrigin(true);
         Start.setParent(Start);
-        Astar(Start, Dest);
+        AstarBORING(Start, Dest);
         //Iterate through closed getting Dest's parent
         ArrayList<Node> Retable = new ArrayList<Node>();
         Retable.add(Dest);
@@ -129,6 +165,11 @@ public class Cluster extends ArrayList<Node>{
     public void openViable(Node Curr, Node Dest) {
         ArrayList<Node> ApplicableNeighbors = Curr.getNeighborNodes();
         ApplicableNeighbors.removeIf(inCLOSED);
+//        for (int i = 0; i < ApplicableNeighbors.size(); i++) {
+//            for (Node N : CLOSED) {
+//                ApplicableNeighbors.remove(N);
+//            }
+//        }
         for (Node N : ApplicableNeighbors) {
             N.updateg();
             if (OPEN.contains(N)) {
@@ -229,7 +270,7 @@ public class Cluster extends ArrayList<Node>{
                 r = (rgb>>16) & 0xff;
                 g = (rgb>>8) & 0xff;
                 b = rgb & 0xff;
-                if ((r + g + b) == (255*3)){
+                if ((r + g + b) == (255*3)) {
                     retable[i][j] = new Node("TNLA (" + i + "," + j + ")", i * 10, j * 10);
                 } else if (((g + b) == 0) && (r == 255) && !ended){
                     retable[i][j] = new Node("Dest", i * 10, j * 10);

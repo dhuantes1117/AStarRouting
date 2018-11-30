@@ -117,6 +117,19 @@ class Node{
         this.h = Integer.MAX_VALUE;
         this.origin = false;
     }
+    
+    public Node(Node N) {
+        this.x = N.x();
+        this.y = N.y();
+        this.g = N.g();
+        this.h = N.h();
+        this.origin = N.origin;
+        this.classroom = N.classroom;
+        this.RoomName = N.RoomName;
+        this.ClassName = N.ClassName;
+        this.Parent = N.Parent;
+        this.Neighbors = N.getNeighbors();
+    }
 
     /**
      * @return the RoomName
