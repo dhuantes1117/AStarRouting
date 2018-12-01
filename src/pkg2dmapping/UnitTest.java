@@ -120,38 +120,16 @@ public class UnitTest {
         Node C = new Node("C", 2, 1);           //       
         Node D = new Node("D", 5, 1);
 
-        ArrayList<Edge> Ae = new ArrayList<Edge>();
-        ArrayList<Edge> Be = new ArrayList<Edge>();
-        ArrayList<Edge> Ce = new ArrayList<Edge>();
-        ArrayList<Edge> De = new ArrayList<Edge>();
-
-        ArrayList<Node> Map = new ArrayList<Node>();
-
-        Cluster Grid;
-
         A.seth(D);
         B.seth(D);
         C.seth(D);
         D.seth(D);
-
-        Ae.add(new Edge(B, 1));
-        Be.add(new Edge(A, 1));
-        Be.add(new Edge(C, 1));
-        Ce.add(new Edge(B, 1));
-        Ce.add(new Edge(D, 3));
-        De.add(new Edge(C, 3));
-
-        A.setNeighbors(Ae);
-        B.setNeighbors(Be);
-        C.setNeighbors(Ce);
-        D.setNeighbors(De);
-
-        Map.add(A);
-        Map.add(B);
-        Map.add(C);
-        Map.add(D);
-
-        Grid = new Cluster(Map);
+        
+        Cluster Grid = new Cluster(Arrays.asList(A, B, C, D));
+        
+        Grid.connect(A, B);
+        Grid.connect(B, C);
+        Grid.connect(C, D);
         
         A.setParent(A);
         Grid.AstarBORING(A, D);

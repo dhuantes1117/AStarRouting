@@ -111,30 +111,18 @@ public class Cluster extends ArrayList<Node>{
     }
     
     public void AstarBORING (Node Best, Node Dest){
-        ArrayList<Node> Considerable = new ArrayList<>();
         int counter = 0;
         AstarB1(Best, Dest);
         while(!OPEN.peek().equals(Dest)) {
             counter++;
-            System.out.println("NOT DONE YET CHECK IN LATER");
-            System.out.println(OPEN.peek().getRoomName());
-            //if OPEN.peek() results in a tie, preform Astar (ONCE) on each polled Node with a constant f cost
-            int currentBestfCost = OPEN.peek().f();
-            System.out.println("Current best cost is " + currentBestfCost + " for");
-            int y = 0;
-            System.out.println("Size of Open is: " + OPEN.size());
-            do {      
-                System.out.println(y++);
-                if (!CLOSED.contains(OPEN.peek())) {
-                    Considerable.add(OPEN.poll());
-                }
-                if (OPEN.peek() == null) {
-                    break;
-                }
-            } while (currentBestfCost == OPEN.peek().f());
-            Considerable.forEach(N -> AstarB1(N, Dest));
-            if (counter > 300) {
-                Dest.setParent(OPEN.poll());
+            //tie Protocol???
+            //What is the desired outcome? currently Open Nodes with identical
+            //f costs without going forward with each of them ONLY POLL IF TIES EXIST
+            Node N = OPEN.poll();
+            tieBreaker(N, Dest);
+            AstarB1(N, Dest);
+            if (counter > 500) {
+                Dest.setParent(N);
                 return;
             }
         }
@@ -158,8 +146,21 @@ public class Cluster extends ArrayList<Node>{
         return Retable;
     }
     
-    public void tieBreaker(Edge First, Edge Second, Node Dest) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void tieBreaker(Node First, Node Dest) {
+        try {
+            if (First.f() < OPEN.peek().f()) {
+                return;
+            } else if (First.f() == OPEN.peek().f()) {
+                Node N;
+                N = OPEN.poll();
+                AstarB1(N, Dest);
+                tieBreaker(N, Dest);
+            }
+        } catch (NullPointerException e) {
+            return;
+        } catch (Exception e) {
+            System.out.println("Tiebreaker broke");
+        }
     }
 
     public void openViable(Node Curr, Node Dest) {
