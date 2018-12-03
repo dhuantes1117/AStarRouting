@@ -24,7 +24,6 @@ public class MappingMethods {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, Exception {
-        
         UnitTest Nevada = new UnitTest();
         if(Nevada.runAllTests()){
             return;

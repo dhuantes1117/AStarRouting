@@ -234,6 +234,17 @@ public class Cluster extends ArrayList<Node>{
         return retable;
     }
     
+    public void closestStairs() {
+        ArrayList<Node> Parsable = new ArrayList<Node>();
+        for (Node N : this) {
+            if (N.isWormhole()) {
+                Parsable.add(N);
+            }
+        }
+        int currMin = Integer.MAX_VALUE;
+        //accumulation of distance
+    }
+    
     private BufferedImage generateBuferredImage (String fileLoc) throws Exception {
         BufferedImage img = null;
         File f = null;
@@ -388,4 +399,5 @@ public class Cluster extends ArrayList<Node>{
         File drawn = new File("/home/dhuant/NetBeansProjects/Ruby/2DMapping/maps/drawnMaps/" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
         ImageIO.write(Map, "png", drawn);
     }
+    
 }

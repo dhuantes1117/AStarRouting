@@ -15,6 +15,7 @@ class Node{
     private int h;
     private boolean origin;
     private boolean classroom;
+    private boolean wormhole;
     private String RoomName;
     private String ClassName;
     private Node Parent;
@@ -305,5 +306,19 @@ class Node{
      */
     public void setClassroom(boolean classroom) {
         this.classroom = classroom;
+    }
+
+    /**
+     * @return the wormhole
+     */
+    public boolean isWormhole() {
+        return wormhole;
+    }
+
+    /**
+     * @param wormhole the wormhole to set
+     */
+    public void setWormhole(boolean wormhole) {
+        this.wormhole = wormhole;
     }
 }
