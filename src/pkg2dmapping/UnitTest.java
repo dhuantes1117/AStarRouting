@@ -28,9 +28,10 @@ public class UnitTest {
             tieBreaker();
             intendedRoute();
             anUnreachableDestination();
+            teleportCorrect();
         } catch (Exception e) {
             System.out.println("UnitTest has encountered an error:\n" + e.getMessage());
-            e.printStackTrace();
+            //e.printStackTrace();
             return true;
         }
         System.out.println("Unit Test has succesfully completed, no errors were detected");
@@ -378,6 +379,37 @@ public class UnitTest {
             return;
         }
         throw new Exception("No issue was caused by an unreachable destination");
+    }
+
+    public void teleportCorrect() throws Exception {
+        Node A = new Node("A", 0, 0);
+        Node B = new Node("B", 0, 1);
+        Node C = new Node("C", 56, 42, false, true);
+        Node D = new Node("D", 48, 50);
+        
+        A.seth(C);
+        B.seth(C);
+        C.seth(C);
+        
+        C.seth(D);
+        D.seth(D);
+        
+        Cluster ZoneA = new Cluster(Arrays.asList(A, B, C));
+        Cluster ZoneB = new Cluster(Arrays.asList(C, D));
+        
+        ZoneA.connect(A, B);
+        ZoneA.connect(B, C);
+        ZoneB.connect(C, D);
+        
+        LayeredCluster Universe = new LayeredCluster(Arrays.asList(ZoneA, ZoneB));
+        
+        ArrayList<Node> InterdimensionalTraversal = new ArrayList<Node>();
+        ArrayList<Node> Actual = new ArrayList<Node>();
+        InterdimensionalTraversal.addAll(Arrays.asList(A, B, C, D));
+        Actual = Universe.Route(A, D);
+        if (!Actual.equals(InterdimensionalTraversal)) {
+            throw new Exception("InterdimensionalTraversal took an unexpected route!\nRoute taken was: "+ ZoneA.routeString(Actual));
+        }
     }
 }
 

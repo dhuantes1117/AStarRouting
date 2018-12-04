@@ -119,7 +119,7 @@ public class Cluster extends ArrayList<Node>{
             //What is the desired outcome? currently Open Nodes with identical
             //f costs without going forward with each of them ONLY POLL IF TIES EXIST
             Node N = OPEN.poll();
-            tieBreaker(N, Dest);
+            //tieBreaker(N, Dest);
             AstarB1(N, Dest);
             if (counter > 500) {
                 Dest.setParent(N);

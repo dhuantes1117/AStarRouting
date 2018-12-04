@@ -37,9 +37,10 @@ public class LayeredCluster extends ArrayList<Cluster>{
         if (A_Layer == B_Layer) {
             return A_Layer.routeAstar(A, B);
         } else {
-            Node commonPoint = closestWormhole(A_Layer, B_Layer, B, A);
+            Node commonPoint = closestWormhole(A_Layer, B_Layer, A, B);
             ARoute = A_Layer.routeAstar(A, commonPoint);
             BRoute = B_Layer.routeAstar(commonPoint, B);
+            B_Layer.remove(0);
             ARoute.addAll(B_Layer);
             return ARoute;
         }

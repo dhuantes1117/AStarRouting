@@ -74,6 +74,15 @@ class Node{
         this.h = Integer.MAX_VALUE;
         this.origin = destination;
     }
+    
+    public Node(String RoomName, int x, int y, boolean destination, boolean wormhole) {
+        this.RoomName = RoomName;
+        this.x = x;
+        this.y = y;
+        this.h = Integer.MAX_VALUE;
+        this.origin = destination;
+        this.wormhole = wormhole;
+    }
 
     public Node(String RoomName, int x, int y) {
         this.RoomName = RoomName;
