@@ -234,6 +234,10 @@ public class Cluster extends ArrayList<Node>{
         return retable;
     }
     
+    public double distance(Node A, Node B){
+        return Math.hypot(Math.abs(A.x() - B.x()), Math.abs(A.y() - B.y()));
+    }
+    
     public void closestStairs() {
         ArrayList<Node> Parsable = new ArrayList<Node>();
         for (Node N : this) {
