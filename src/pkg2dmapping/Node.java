@@ -140,7 +140,7 @@ class Node{
         this.Parent = N.Parent;
         this.Neighbors = N.getNeighbors();
     }
-
+    
     /**
      * @return the RoomName
      */

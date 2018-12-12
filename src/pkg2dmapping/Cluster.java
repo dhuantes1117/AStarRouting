@@ -1,5 +1,6 @@
 package pkg2dmapping;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
@@ -131,11 +132,9 @@ public class Cluster extends ArrayList<Node>{
     }
     
     public ArrayList<Node> routeAstar (Node Start, Node Dest){
-        //Start.getNeighborNodes().forEach((N) -> System.out.print(N.getRoomName() + " - "));
         Start.setOrigin(true);
         Start.setParent(Start);
         AstarBORING(Start, Dest);
-        //Iterate through closed getting Dest's parent
         ArrayList<Node> Retable = new ArrayList<Node>();
         Retable.add(Dest);
         while(!Retable.contains(Start)) {  
@@ -166,11 +165,6 @@ public class Cluster extends ArrayList<Node>{
     public void openViable(Node Curr, Node Dest) {
         ArrayList<Node> ApplicableNeighbors = Curr.getNeighborNodes();
         ApplicableNeighbors.removeIf(inCLOSED);
-//        for (int i = 0; i < ApplicableNeighbors.size(); i++) {
-//            for (Node N : CLOSED) {
-//                ApplicableNeighbors.remove(N);
-//            }
-//        }
         for (Node N : ApplicableNeighbors) {
             N.updateg();
             if (OPEN.contains(N)) {

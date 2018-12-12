@@ -45,7 +45,6 @@ public class LayeredCluster extends ArrayList<Cluster>{
             return ARoute;
         }
         //thx1138
-        
     }
     
     /**
