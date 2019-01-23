@@ -113,6 +113,7 @@ public class UnitTest {
         }
     }
     
+    
     public void assignParents() throws Exception {
         boolean fA, fB, fC, fD;
         //Make a line of 4 nodes, preform Astar
@@ -149,7 +150,7 @@ public class UnitTest {
     public void intendedRoute() throws Exception{
         Node A = new Node("A", 0, 1, true);     //    D               H
         Node B = new Node("B", 0, 2);           //    |               |
-        Node C = new Node("C", 1, 1);           //A---C---E--- --- ---G---I
+        Node C = new Node("C", 1, 1);            //A---C---E--- --- ---G---I
         Node D = new Node("D", 1, 0);           //|       |
         Node E = new Node("E", 2, 1);           //B       F
         Node F = new Node("F", 2, 2);
@@ -410,6 +411,11 @@ public class UnitTest {
         if (!Actual.equals(InterdimensionalTraversal)) {
             throw new Exception("InterdimensionalTraversal took an unexpected route!\nRoute taken was: "+ ZoneA.routeString(Actual));
         }
+    }
+    
+    public void classCheck() throws Exception{
+        Cluster mapLoc = new Cluster("C:\\Users\\jsebasco5721\\Documents\\NetBeansProjects\\astar\\maps");
+        
     }
 }
 

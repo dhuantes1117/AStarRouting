@@ -53,6 +53,7 @@ public class Cluster extends ArrayList<Node>{
         };
     private File F;
     private BufferedImage Map;
+    //0, 1 -> CN214
     
     
     public Cluster(){
@@ -261,7 +262,50 @@ public class Cluster extends ArrayList<Node>{
         return img;
     }
     
-    private Node[][] generateNodeArray (BufferedImage img) throws Exception{
+    public Node[][] generateNodeArray (BufferedImage img) throws Exception{ //
+        String[][] classLocation = new String[26][17];
+        classLocation[9][20] = "IND119";
+        classLocation[9][21] = "IND120";
+        classLocation[9][24] = "CUSTODIAN";
+        classLocation[9][25] = "IND124";
+        classLocation[10][5] = "VA143";
+        classLocation[10][6] = "VA141";
+        classLocation[10][7] = "VA139";
+        classLocation[10][9] = "VA137";
+        classLocation[11][3] = "BACKHALL";
+        classLocation[12][3] = "TX145";
+        classLocation[12][5] = "VA144";
+        classLocation[12][6] = "VA142";
+        classLocation[12][7] = "VA140";
+        classLocation[12][9] = "VA138";
+        classLocation[12][11] = "CLERKCOPY";
+        classLocation[12][17] = "LA135";
+        classLocation[12][22] = "HI125";
+        classLocation[12][24] = "HI126";
+        classLocation[13][11] = "LA135";
+        classLocation[14][3] = "TX146";
+        classLocation[14][5] = "OK148";
+        classLocation[14][6] = "OK150";
+        classLocation[14][7] = "OK152";
+        classLocation[14][9] = "OK154";
+        classLocation[14][11] = "NM156";
+        classLocation[14][15] = "LA134";
+        classLocation[14][17] = "KY132";
+        classLocation[14][18] = "KY130";
+        classLocation[14][21] = "KY128";
+        classLocation[15][3] = "TX147";
+        classLocation[15][11] = "NM155";
+        classLocation[15][15] = "LA133";
+        classLocation[15][24] = "HI127";
+        classLocation[16][5] = "OK149";
+        classLocation[16][6] = "OK151";
+        classLocation[16][7] = "OK153";
+        classLocation[16][18] = "STUCO";
+        classLocation[16][19] = "KY131";
+        classLocation[16][20] = "KYSTORAGE";
+        classLocation[16][21] = "KY129";
+
+        
         int rgb;
         int a;
         int r;
@@ -280,13 +324,17 @@ public class Cluster extends ArrayList<Node>{
                 r = (rgb>>16) & 0xff;
                 g = (rgb>>8) & 0xff;
                 b = rgb & 0xff;
-                if ((r + g + b) == (255*3)) {
-                    retable[i][j] = new Node("TNLA (" + i + "," + j + ")", i * 10, j * 10);
-                } else if (((g + b) == 0) && (r == 255) && !ended){
-                    retable[i][j] = new Node("Dest", i * 10, j * 10);
-                    ended = true;
-                } else if (((r + b) == 0) && (g == 255) && !started){
+                if ((r + g + b) == (255*3)) { //white hallway
+                    retable[i][j] = new Node("TNLA (" + i + "," + j + ")"/*collection.(i,j)*/, i * 10, j * 10);
+                } 
+                else if (((r + b) == 0) && (g == 255) && !started){ // green staircase
                     retable[i][j] = new Node("Start", i * 10, j * 10);
+                    started = true;
+                } 
+                else if (((r + g) == 0) && (b == 255) && !started){ // blue classroom
+                    if(classLocation[i][j] != null){
+                        retable[i][j] = new Node(classLocation[i][j], i * 10, j * 10);
+                    }
                     started = true;
                 }
             }
@@ -394,7 +442,7 @@ public class Cluster extends ArrayList<Node>{
             }
             Map.setRGB(N.x()/10, N.y()/10, p);
         }
-        File drawn = new File("/home/dhuant/NetBeansProjects/Ruby/2DMapping/maps/drawnMaps/" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
+        File drawn = new File("C:\\Users\\jsebasco5721\\Documents\\NetBeansProjects\\astar\\maps\\drawnMaps" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
         ImageIO.write(Map, "png", drawn);
     }
     

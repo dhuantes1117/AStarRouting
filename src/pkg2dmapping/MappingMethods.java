@@ -36,7 +36,7 @@ public class MappingMethods {
         System.out.println(Grid.routeString(Route));
         Route = Grid.routeAstar(Grid.closest(0, 0), Grid.closest(12, 3));
         System.out.println(Grid.routeString(Route));
-        Cluster Grid2 = new Cluster("/home/dhuant/NetBeansProjects/2DMapping/maps/currentMap/");
+        Cluster Grid2 = new Cluster("C:\\Users\\jsebasco5721\\Documents\\NetBeansProjects\\astar\\maps\\currentMap");
         System.out.println(Grid2.getStart().x() + ", " + Grid2.getStart().y());
         System.out.println(Grid2.getDest().x() + ", " + Grid2.getDest().y());
         //Route = Grid2.routeAstar(Grid2.getStart(), Grid2.getDest());
