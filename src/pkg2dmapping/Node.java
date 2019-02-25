@@ -11,8 +11,8 @@ class Node{
     
     private int x;
     private int y;
-    private int g = Integer.MAX_VALUE;
-    private int h = 0;
+    private int g;
+    private int h;
     private boolean origin;
     private boolean classroom;
     private boolean wormhole;
@@ -272,7 +272,7 @@ class Node{
             return;
         }
         Edge ParentEdge = this.Neighbors.peek();
-        this.setg(ParentEdge.getConnection().g + ParentEdge.g());
+        this.setg(ParentEdge.getConnection().g() + ParentEdge.g());
     }
     
     public int updateg(Node N) {

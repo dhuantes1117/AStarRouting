@@ -133,6 +133,9 @@ public class Cluster extends ArrayList<Node>{
             //What is the desired outcome? currently Open Nodes with identical
             //f costs without going forward with each of them ONLY POLL IF TIES EXIST
             Node N = OPEN.poll();
+            if (N.getRoomName().equals("TNLA (3,8)")) {
+                System.out.println("wE MADE IT");
+            }
             System.out.println(N.getRoomName());
             AstarB1(N, Dest);
 //            if (OPEN.size() >= 2) {
@@ -189,13 +192,15 @@ public class Cluster extends ArrayList<Node>{
         ApplicableNeighbors.removeIf(inCLOSED);
         for (int i = 0; i < ApplicableNeighbors.size(); i++) {
             Node N = ApplicableNeighbors.get(i);
-            if (N.isClassroom() && !N.equals(Dest)) {
+            if ((N.isWormhole() || N.isClassroom()) && !N.equals(Dest)) {//not checked with different floors
                 ApplicableNeighbors.remove(i);
                 i--;
             }
         }
         for (Node N : ApplicableNeighbors) {
+            System.out.println(N.g());
             N.updateg();//nothing happens
+            System.out.println(N.g());
             if (OPEN.contains(N)) {
                 if (N.updateg(Curr) < N.g()) {
                     OPEN.remove(N);
@@ -395,7 +400,7 @@ public class Cluster extends ArrayList<Node>{
                     retable[i][j] = new Node("TNLA (" + i + "," + j + ")"/*collection.(i,j)*/, i * 10, j * 10);
                 } 
                 else if ((b == 0) && (g == 100) && (r == 100)){ // yellow staircase
-                    retable[i][j] = new Node("Start", i * 10, j * 10, true, true);
+                    retable[i][j] = new Node("Staircase At (" + i + "," + j + ")", i * 10, j * 10, false, true);
                     started = true;
                 } 
                 else if (((r + g) == 0) && (b == 255)){ // blue classroom
