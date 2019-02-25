@@ -11,8 +11,8 @@ class Node{
     
     private int x;
     private int y;
-    private int g;
-    private int h;
+    private int g = Integer.MAX_VALUE;
+    private int h = 0;
     private boolean origin;
     private boolean classroom;
     private boolean wormhole;
@@ -75,6 +75,7 @@ class Node{
         this.origin = destination;
     }
     
+    //MAIN NODE CONSTRUCTOR
     public Node(String RoomName, int x, int y, boolean destination, boolean wormhole) {
         this.RoomName = RoomName;
         this.x = x;
@@ -83,7 +84,8 @@ class Node{
         this.origin = destination;
         this.wormhole = wormhole;
     }
-
+    
+    //MAIN NODE CONSTRUCTOR CLASSROOMS
     public Node(String RoomName, int x, int y) {
         this.RoomName = RoomName;
         this.x = x;
@@ -91,7 +93,18 @@ class Node{
         this.h = Integer.MAX_VALUE;
         this.origin = false;
     }
-
+    
+    public Node(String RoomName, int x, int y, boolean classroom, char doesNothing) {
+        this.RoomName = RoomName;
+        this.x = x;
+        this.y = y;
+        this.h = Integer.MAX_VALUE;
+        this.origin = false;
+        this.classroom = classroom;
+    }
+    
+    
+    
     public Node(int x, int y, boolean destination, ArrayList<Edge> Neighbors) {
         this.RoomName = "Bucharest";
         this.x = x;
@@ -201,9 +214,13 @@ class Node{
     public void seth(Node Dest) {
         sethManhattan(Dest);
     }
+    
+    public int f() {
+        return this.g + 2 * this.h;
+    }
 
     public int f(Node Dest) {
-        return this.g() + this.h();
+        return this.g() + 2 * (Math.abs(Dest.x() - this.x()) + Math.abs(Dest.y() - this.y()));
     }
 
     /**
@@ -290,10 +307,6 @@ class Node{
      */
     public void setg(int g) {
         this.g = g;
-    }
-    
-    public int f() {
-        return this.g + this.h;
     }
 
     /**

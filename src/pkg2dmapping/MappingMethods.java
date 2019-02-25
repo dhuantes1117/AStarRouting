@@ -36,12 +36,25 @@ public class MappingMethods {
         System.out.println(Grid.routeString(Route));
         Route = Grid.routeAstar(Grid.closest(0, 0), Grid.closest(12, 3));
         System.out.println(Grid.routeString(Route));
-        Cluster Grid2 = new Cluster("C:\\Users\\jsebasco5721\\Documents\\NetBeansProjects\\astar\\maps\\currentMap");
-        System.out.println(Grid2.getStart().x() + ", " + Grid2.getStart().y());
-        System.out.println(Grid2.getDest().x() + ", " + Grid2.getDest().y());
-        //Route = Grid2.routeAstar(Grid2.getStart(), Grid2.getDest());
-        //System.out.println(Grid2.routeString(Route));
-        //Grid2.drawRoute(Route);
+        Cluster Grid2 = new Cluster("C:\\Users\\cnewby5283\\Documents\\NetBeansProjects\\AStarRouting\\maps\\reagan_maps"); //or 2DMapping
+        
+        
+        //Methods to get a start and end node
+        //System.out.println(Grid2.getStartNode("COUNSELOR"));
+        //System.out.println(Grid2.getDestNode("KY132"));
+        //Grid2.print(Grid2);
+        Route = Grid2.routeAstar(Grid2.getStartNode("COUNSELOR"), Grid2.getDestNode("KY132"));
+        
+        System.out.println(Grid2.routeString(Route));
+        Grid2.drawRoute(Route);
+        int test = Grid2.closest(40.0, 80.0).h();
+        int test2 = Grid2.closest(40.0, 80.0).h();
+        int test3 = Grid2.closest(40.0, 80.0).g();
+        int test4 = Grid2.closest(40.0, 80.0).g();
+        System.out.println(test);
+        System.out.println(test2);
+        System.out.println(test3);
+        System.out.println(test4);
     }
     //recurTHIS(Node curr, ArrayList<Node>/Set<Node> Stack, Node destination)
     //Keep multiple stacks open for true A*, abstraction, I do not believe it is needed
