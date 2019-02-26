@@ -138,9 +138,9 @@ public class Cluster extends ArrayList<Node>{
             }
             System.out.println(N.getRoomName());
             AstarB1(N, Dest);
-//            if (OPEN.size() >= 2) {
-//                tieBreaker(N, Dest);
-//            }
+            if (OPEN.size() >= 2) {
+                tieBreaker(N, Dest);
+            }
             if (counter > 500) {
                 Dest.setParent(N);
                 return;
@@ -198,13 +198,11 @@ public class Cluster extends ArrayList<Node>{
             }
         }
         for (Node N : ApplicableNeighbors) {
-            System.out.println(N.g());
-            N.updateg();//nothing happens
-            System.out.println(N.g());
+            N.updateg();
             if (OPEN.contains(N)) {
-                if (N.updateg(Curr) < N.g()) {
+                if (N.g(Curr) < N.g()) {
                     OPEN.remove(N);
-                } else if (N.updateg(Curr) > N.g()) {
+                } else if (N.g(Curr) > N.g()) {
                     continue;
                 }
             }

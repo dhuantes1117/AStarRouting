@@ -275,12 +275,14 @@ class Node{
         this.setg(ParentEdge.getConnection().g() + ParentEdge.g());
     }
     
-    public int updateg(Node N) {
+    public int g(Node N) {
         //give g if parameter was parent
         //return N.g + Neighbors.peek().g();
         for (Edge Neighbor : Neighbors) {
             if (Neighbor.getConnection().equals(N)) {
-                return N.g + Neighbor.g();
+                System.out.println("this g:" + this.g());
+                System.out.println("Edge g:" + Neighbor.g());
+                return this.g() + Neighbor.g();
             }
         }
         return -1;

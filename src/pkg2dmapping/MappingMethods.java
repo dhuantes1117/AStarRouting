@@ -48,13 +48,21 @@ public class MappingMethods {
         System.out.println(Grid2.routeString(Route));
         Grid2.drawRoute(Route);
         int test = Grid2.closest(40.0, 80.0).h();
-        int test2 = Grid2.closest(40.0, 80.0).h();
+        int test2 = Grid2.closest(40.0, 90.0).h();
         int test3 = Grid2.closest(40.0, 80.0).g();
-        int test4 = Grid2.closest(40.0, 80.0).g();
-        System.out.println(test);
-        System.out.println(test2);
-        System.out.println(test3);
-        System.out.println(test4);
+        int test4 = Grid2.closest(40.0, 90.0).g();
+        int test5 = Grid2.closest(40.0, 80.0).f();
+        int test6 = Grid2.closest(40.0, 90.0).f();
+        int test7 = Grid2.closest(70.0, 110.0).g();
+        int test8 = Grid2.closest(70.0, 110.0).h();
+        System.out.println("h(4, 8) = " + test);
+        System.out.println("h(4, 9) = " +test2);
+        System.out.println("g(4, 8) = " +test3);
+        System.out.println("g(4, 9) = " +test4);
+        System.out.println("f(4, 8) = " +test5);
+        System.out.println("f(4, 9) = " +test6);
+        System.out.println("g(7, 11) = " +test7);
+        System.out.println("h(7, 11) = " +test8);
     }
     //recurTHIS(Node curr, ArrayList<Node>/Set<Node> Stack, Node destination)
     //Keep multiple stacks open for true A*, abstraction, I do not believe it is needed
