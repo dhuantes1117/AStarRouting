@@ -29,7 +29,7 @@ public class UnitTest {
             intendedRoute();
             anUnreachableDestination();
             //teleportCorrect();
-            classCheck();
+            //classCheck();
         } catch (Exception e) {
             System.out.println("UnitTest has encountered an error:\n" + e.getMessage());
             e.printStackTrace();

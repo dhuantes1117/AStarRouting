@@ -28,13 +28,13 @@ class Node{
             //include ISDESTINATION!!!
             int fi = i.g();
             int fj = j.g();
-            if (!(i.isParent() && j.isParent()) && (i.isParent() || j.isParent())) {
-                if (i.isParent()) {
-                    return -1;
-                } else if (j.isParent()) {
-                    return 1;
-                }
-            }
+//            if (!(i.isParent() && j.isParent()) && (i.isParent() || j.isParent())) {
+//                if (i.isParent()) {
+//                    return -1;
+//                } else if (j.isParent()) {
+//                    return 1;
+//                }
+//            }
             if (fi > fj) {
                 return 1;
             } else if (fj > fi) {
@@ -216,11 +216,11 @@ class Node{
     }
     
     public int f() {
-        return this.g + 2 * this.h;
+        return this.g() + this.h;
     }
 
     public int f(Node Dest) {
-        return this.g() + 2 * (Math.abs(Dest.x() - this.x()) + Math.abs(Dest.y() - this.y()));
+        return this.g() + (Math.abs(Dest.x() - this.x()) + Math.abs(Dest.y() - this.y()));
     }
 
     /**
@@ -271,7 +271,12 @@ class Node{
             this.setg(0);
             return;
         }
-        Edge ParentEdge = this.Neighbors.peek();
+        Edge ParentEdge = new Edge(this, 0);
+        for (Edge Neighbor : Neighbors) {
+            if (Neighbor.getConnection().equals(this.Parent)) {
+                ParentEdge = Neighbor;
+            }
+        }
         this.setg(ParentEdge.getConnection().g() + ParentEdge.g());
     }
     

@@ -138,7 +138,7 @@ public class Cluster extends ArrayList<Node>{
             }
             System.out.println(N.getRoomName());
             AstarB1(N, Dest);
-            if (OPEN.size() >= 2) {
+            if (OPEN.size() > 1) {
                 tieBreaker(N, Dest);
             }
             if (counter > 500) {
@@ -166,17 +166,21 @@ public class Cluster extends ArrayList<Node>{
     
     public void tieBreaker(Node First, Node Dest) {
         //try {
+        //without weighted h or g, these costs are identical but why? because there's a ton of ties?
+        //why doesn't getting rid of the recursive part make it work? who knows
             int a = First.f(Dest);
             int b = OPEN.peek().f(Dest);
+            System.out.println("a: " + a);
+            System.out.println("b: " + b);
             if ((a < b) || (a > b)) {
                 return;
             } else if (a == b) {
                 Node N;
                 N = OPEN.poll();
                 AstarB1(N, Dest);
-                if (OPEN.size() != 0) {
-                    tieBreaker(N, Dest);
-                }
+//                if (OPEN.size() != 0) {
+//                    tieBreaker(N, Dest);
+//                }
             }
         /*} catch (NullPointerException e) {
             return;
@@ -207,7 +211,9 @@ public class Cluster extends ArrayList<Node>{
                 }
             }
             N.setParent(Curr);
+            System.out.println("prev:" + N.g() + "-------------------------------------------");
             N.updateg();
+            System.out.println("post:" + N.g());
             N.seth(Dest);
             OPEN.add(N);
         }
