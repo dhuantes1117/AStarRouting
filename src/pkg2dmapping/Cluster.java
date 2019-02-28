@@ -138,9 +138,9 @@ public class Cluster extends ArrayList<Node>{
             }
             System.out.println(N.getRoomName());
             AstarB1(N, Dest);
-            if (OPEN.size() > 1) {
-                tieBreaker(N, Dest);
-            }
+//            if (OPEN.size() > 3) {
+//                tieBreaker(N, Dest);
+//            }
             if (counter > 500) {
                 Dest.setParent(N);
                 return;
@@ -153,6 +153,7 @@ public class Cluster extends ArrayList<Node>{
     public ArrayList<Node> routeAstar (Node Start, Node Dest){
         Start.setOrigin(true);
         Start.setParent(Start);
+        Start.updateg();
         AstarBORING(Start, Dest);
         ArrayList<Node> Retable = new ArrayList<Node>();
         Retable.add(Dest);
@@ -175,8 +176,7 @@ public class Cluster extends ArrayList<Node>{
             if ((a < b) || (a > b)) {
                 return;
             } else if (a == b) {
-                Node N;
-                N = OPEN.poll();
+                Node N = OPEN.poll();
                 AstarB1(N, Dest);
 //                if (OPEN.size() != 0) {
 //                    tieBreaker(N, Dest);
@@ -202,18 +202,16 @@ public class Cluster extends ArrayList<Node>{
             }
         }
         for (Node N : ApplicableNeighbors) {
-            N.updateg();
+            //N.updateg();
             if (OPEN.contains(N)) {
-                if (N.g(Curr) < N.g()) {
+                if (N.g(Curr) <= N.g()) {
                     OPEN.remove(N);
                 } else if (N.g(Curr) > N.g()) {
                     continue;
                 }
             }
             N.setParent(Curr);
-            System.out.println("prev:" + N.g() + "-------------------------------------------");
             N.updateg();
-            System.out.println("post:" + N.g());
             N.seth(Dest);
             OPEN.add(N);
         }

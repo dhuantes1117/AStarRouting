@@ -36,7 +36,7 @@ public class MappingMethods {
         System.out.println(Grid.routeString(Route));
         Route = Grid.routeAstar(Grid.closest(0, 0), Grid.closest(12, 3));
         System.out.println(Grid.routeString(Route));
-        Cluster Grid2 = new Cluster("/home/dhuant/NetBeansProjects/2DMapping/maps/reagan_maps");
+        Cluster Grid2 = new Cluster("/home/dhuant/NetBeansProjects/2DMapping/maps/reagan_maps/");
         //Cluster Grid2 = new Cluster("C:\\Users\\cnewby5283\\Documents\\NetBeansProjects\\AStarRouting\\maps\\reagan_maps"); //or 2DMapping
         
         
