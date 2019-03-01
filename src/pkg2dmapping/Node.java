@@ -285,8 +285,6 @@ class Node{
         //return N.g + Neighbors.peek().g();
         for (Edge Neighbor : Neighbors) {
             if (Neighbor.getConnection().equals(N)) {
-                System.out.println("this g:" + this.g());
-                System.out.println("Edge g:" + Neighbor.g());
                 return this.g() + Neighbor.g();
             }
         }
