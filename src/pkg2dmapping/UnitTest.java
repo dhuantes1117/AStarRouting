@@ -150,7 +150,7 @@ public class UnitTest {
     public void intendedRoute() throws Exception {
         Node A = new Node("A", 0, 1, true);     //    D               H
         Node B = new Node("B", 0, 2);           //    |               |
-        Node C = new Node("C", 1, 1);            //A---C---E--- --- ---G---I
+        Node C = new Node("C", 1, 1);           //A---C---E--- --- ---G---I
         Node D = new Node("D", 1, 0);           //|       |
         Node E = new Node("E", 2, 1);           //B       F
         Node F = new Node("F", 2, 2);
@@ -230,7 +230,7 @@ public class UnitTest {
         RouteTheo.add(I);
 
         try {
-            RouteActual = Grid.routeAstar(Grid.get(0), Grid.get(8));
+            RouteActual = Grid.routeAstar(A, I);
             if (!RouteTheo.equals(RouteActual)) {
                 throw new Exception("Anticipated Route was not taken\nRoute taken was:\n" + Grid.routeString(RouteActual));
             }

@@ -44,10 +44,12 @@ public class MappingMethods {
         //System.out.println(Grid2.getStartNode("COUNSELOR"));
         //System.out.println(Grid2.getDestNode("KY132"));
         //Grid2.print(Grid2);
-        Route = Grid2.routeAstar(Grid2.getStartNode("COUNSELOR"), Grid2.getDestNode("KY132"));
+        Route = Grid2.routeAstar(Grid2.getStartNode("COUNSELOR"), Grid2.getDestNode("LIBRARY"));
+        
+        Grid2.drawRoute(Route);
+        
         
         System.out.println(Grid2.routeString(Route));
-        Grid2.drawRoute(Route);
         int test = Grid2.closest(40.0, 80.0).h();
         int test2 = Grid2.closest(40.0, 90.0).h();
         int test3 = Grid2.closest(40.0, 80.0).g();
@@ -64,6 +66,20 @@ public class MappingMethods {
         System.out.println("f(4, 9) = " +test6);
         System.out.println("g(7, 11) = " +test7);
         System.out.println("h(7, 11) = " +test8);
+        Scanner S = new Scanner(System.in);
+        while (true) {
+            double x;
+            double y;
+            System.out.println("Enter an x:");
+            x = S.nextInt() * 10.0;
+            System.out.println("Enter a y:");
+            y = S.nextInt() * 10.0;
+            Node N = Grid2.closest(x, y);
+            System.out.println(N.getRoomName() + "'s");
+            System.out.println("g: " + N.g());
+            System.out.println("h: " + N.h());
+            System.out.println("f: " + N.f());
+        }
     }
     //recurTHIS(Node curr, ArrayList<Node>/Set<Node> Stack, Node destination)
     //Keep multiple stacks open for true A*, abstraction, I do not believe it is needed

@@ -129,18 +129,16 @@ public class Cluster extends ArrayList<Node>{
         System.out.println(OPEN.size());
         while(!OPEN.peek().equals(Dest)) {
             counter++;
-            //tie Protocol???
-            //What is the desired outcome? currently Open Nodes with identical
-            //f costs without going forward with each of them ONLY POLL IF TIES EXIST
-            Node N = OPEN.poll();
-            if (N.getRoomName().equals("TNLA (3,8)")) {
-                System.out.println("wE MADE IT");
+            if (OPEN.size() == 1) {
+                AstarB1(OPEN.poll(), Dest);
+                continue;
             }
-            System.out.println(N.getRoomName());
-            AstarB1(N, Dest);
-//            if (OPEN.size() > 3) {
-//                tieBreaker(N, Dest);
-//            }
+            Node N = OPEN.poll();
+            if (OPEN.size() > 0 && N.f() == OPEN.peek().f()) {
+                tieBreaker(N, Dest);
+            } else {
+                AstarB1(N, Dest);
+            }
             if (counter > 500) {
                 Dest.setParent(N);
                 return;
@@ -154,6 +152,7 @@ public class Cluster extends ArrayList<Node>{
         Start.setOrigin(true);
         Start.setParent(Start);
         Start.updateg();
+        Dest.seth(Dest);
         AstarBORING(Start, Dest);
         ArrayList<Node> Retable = new ArrayList<Node>();
         Retable.add(Dest);
@@ -166,27 +165,21 @@ public class Cluster extends ArrayList<Node>{
     }
     
     public void tieBreaker(Node First, Node Dest) {
-        //try {
-        //without weighted h or g, these costs are identical but why? because there's a ton of ties?
-        //why doesn't getting rid of the recursive part make it work? who knows
-            int a = First.f(Dest);
-            int b = OPEN.peek().f(Dest);
-            System.out.println("a: " + a);
-            System.out.println("b: " + b);
-            if ((a < b) || (a > b)) {
-                return;
-            } else if (a == b) {
-                Node N = OPEN.poll();
-                AstarB1(N, Dest);
-//                if (OPEN.size() != 0) {
-//                    tieBreaker(N, Dest);
-//                }
+        Node Second = OPEN.poll();
+        boolean flagf = First.getNeighborNodes().contains(Dest);
+        boolean flags = Second.getNeighborNodes().contains(Dest);
+        if (flagf ^ flags) {
+            if (flagf) {
+                AstarB1(First, Dest);
+            } else {
+                AstarB1(Second, Dest);
             }
-        /*} catch (NullPointerException e) {
-            return;
-        } catch (Exception e) {
-            System.out.println("Tiebreaker broke");
-        }*/
+        } else if (flagf && flags) {
+            AstarB1(First, Dest);
+        } else if (!flagf && !flags) {
+            AstarB1(First, Dest);
+            AstarB1(Second, Dest);
+        }
     }
 
     public void openViable(Node Curr, Node Dest) {
@@ -500,7 +493,7 @@ public class Cluster extends ArrayList<Node>{
             if (N.getRoomName() == "Dest") {
                 break;
             }
-            int a = 0;
+            int a = 255;
             int r = 255;
             int g = 175;
             int b = 0;
@@ -515,7 +508,8 @@ public class Cluster extends ArrayList<Node>{
             }
             Map.setRGB(N.x()/10, N.y()/10, p);
         }
-        File drawn = new File("C:\\Users\\cnewby5283\\Documents\\NetBeansProjects\\AStarRouting\\maps\\reagan_maps" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
+        File drawn = new File("/home/dhuant/NetBeansProjects/2DMapping/maps/drawnMaps/" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
+        //File drawn = new File("C:\\Users\\cnewby5283\\Documents\\NetBeansProjects\\AStarRouting\\maps\\drawnMaps\\" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
         ImageIO.write(Map, "png", drawn);
     }
     boolean foundStart;

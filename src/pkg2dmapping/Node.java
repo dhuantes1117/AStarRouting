@@ -216,11 +216,11 @@ class Node{
     }
     
     public int f() {
-        return this.g() + this.h;
+        return 3 * this.g() + this.h;
     }
 
     public int f(Node Dest) {
-        return this.g() + (Math.abs(Dest.x() - this.x()) + Math.abs(Dest.y() - this.y()));
+        return 3 * this.g() + (Math.abs(Dest.x() - this.x()) + Math.abs(Dest.y() - this.y()));
     }
 
     /**
