@@ -512,21 +512,11 @@ public class Cluster extends ArrayList<Node>{
         //File drawn = new File("C:\\Users\\cnewby5283\\Documents\\NetBeansProjects\\AStarRouting\\maps\\drawnMaps\\" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
         ImageIO.write(Map, "png", drawn);
     }
-    boolean foundStart;
-    public Node getStartNode(String desiredStartRoom){
+    
+    public Node getNode(String desiredStartRoom){
         Node A =  new Node("Empty Room", 1, 1);;
         for (Node N : this) {
             if (N.getRoomName().equals(desiredStartRoom)) {
-                A = N;
-            }
-        }
-        return A;
-    }
-    boolean foundEnd;
-    public Node getDestNode(String desiredEndRoom){
-        Node A =  new Node("Empty Room", 1, 1);;
-        for (Node N : this) {
-            if (N.getRoomName().equals(desiredEndRoom)) {
                 A = N;
             }
         }

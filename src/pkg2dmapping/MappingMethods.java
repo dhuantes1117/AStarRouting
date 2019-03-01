@@ -30,7 +30,7 @@ public class MappingMethods {
         }
         ArrayList<Node> Route = new ArrayList<Node>();
         Cluster Grid2 = new Cluster("/home/dhuant/NetBeansProjects/2DMapping/maps/reagan_maps/");
-        Route = Grid2.routeAstar(Grid2.getStartNode("COUNSELOR"), Grid2.getDestNode("LIBRARY"));
+        Route = Grid2.routeAstar(Grid2.getNode(args[0]), Grid2.getNode(args[1]));
         
         Grid2.drawRoute(Route);
     }
