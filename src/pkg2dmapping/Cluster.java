@@ -508,7 +508,7 @@ public class Cluster extends ArrayList<Node>{
             }
             Map.setRGB(N.x()/10, N.y()/10, p);
         }
-        File drawn = new File("maps/drawnMaps/" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
+        File drawn = new File("maps\\drawnMaps\\" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
         //File drawn = new File("C:\\Users\\cnewby5283\\Documents\\NetBeansProjects\\AStarRouting\\maps\\drawnMaps\\" + F.getName().replaceAll(".png", "") + "DrawnRoute.png");
         ImageIO.write(Map, "png", drawn);
     }
