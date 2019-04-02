@@ -1,19 +1,26 @@
 package pkg2dmapping;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import javax.imageio.ImageIO;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Scanner;
 import java.util.function.Predicate;
 
 /**
@@ -57,6 +64,12 @@ public class Cluster extends ArrayList<Node>{
             return N.isClassroom();
         }
     };
+    private File classMap;
+    private Map<Dimension, Dimension> coordMap;
+    String[][] classLocation = new String[26][17];//size will vary -- populate using generateClassLocations
+    private File imageFile;
+    private BufferedImage writableEnvironment;
+    private File ClassLocations;
     private File F;
     private BufferedImage Map;
     //0, 1 -> CN214
@@ -80,6 +93,18 @@ public class Cluster extends ArrayList<Node>{
     
     public Cluster(BufferedImage img) throws Exception{
         this.generate(img);
+    }
+    
+    public Cluster(String imageLoc, String classLoc, String mappingLoc) throws IOException{
+        this.imageFile = new File(imageLoc);
+        this.ClassLocations = new File (classLoc);
+        this.classMap = new File(mappingLoc);
+        
+        this.generateWritableEnvironment(imageFile);
+        this.generateCoordinateMapping(classMap);
+        this.generateClassLocations(ClassLocations);
+        
+        //what else???
     }
     
     public void print(ArrayList<Node> Route){
@@ -272,6 +297,57 @@ public class Cluster extends ArrayList<Node>{
         //accumulation of distance
     }
     
+    private void generateClassLocations(File f) throws FileNotFoundException{
+        Scanner s = new Scanner(f);
+        while(s.hasNextLine()){
+            String[] temp = s.nextLine().split(",");
+            if (temp.length != 3) {
+                throw new FileNotFoundException("File was not correctly formatted");
+            }
+            int i = Integer.parseInt(temp[0]);
+            int j = Integer.parseInt(temp[1]);
+            classLocation[i][j] = temp[2];
+        }
+    }
+    
+    private BufferedImage generateWritableEnvironment(File imgFile) throws IOException{
+        this.writableEnvironment = ImageIO.read(imgFile);
+        return this.writableEnvironment;
+    }
+    
+    private void drawRoute(ArrayList<Node> Route) throws IOException{
+        int[][] route = new int[Route.size()][2];
+        Graphics2D canvas = this.writableEnvironment.createGraphics();
+        for (int i = 0; i < Route.size(); i++) {
+            Node N = Route.get(i);
+            Dimension D = coordMap.get(new Dimension(N.x(), N.y()));
+            route[i][0] = N.x();
+            route[i][1] = N.y();
+        }
+        canvas.setColor(Color.orange);
+        for (int i = 0; i < route.length - 1; i++) {
+            canvas.drawLine(route[i][0], route[i][1], route[i + 1][0], route[i + 1][1]);
+        }
+        File drawn = new File(imageFile.getAbsolutePath() + File.pathSeparator + "drawnMaps" + File.pathSeparator + imageFile.getName().replace(".png", "DrawnRoute.png"));
+        ImageIO.write(writableEnvironment, "png", drawn);
+    }
+    
+    private void generateCoordinateMapping(File classMapFile) throws FileNotFoundException{
+        coordMap = new HashMap<Dimension, Dimension>();
+        Scanner s = new Scanner(classMapFile);
+        while(s.hasNextLine()){
+            String[] temp = s.nextLine().split(",");
+            int[] coords = new int[temp.length];
+            for (int i = 0; i < temp.length; i++) {
+                coords[i] = Integer.parseInt(temp[i]);
+            }
+            Dimension a = new Dimension(coords[0], coords[1]);
+            Dimension b = new Dimension(coords[2], coords[3]);
+            coordMap.put(a, b);
+        }
+            
+    }
+    
     private BufferedImage generateBuferredImage (String fileLoc) throws Exception {
         BufferedImage img = null;
         File f = null;
@@ -290,84 +366,7 @@ public class Cluster extends ArrayList<Node>{
         return img;
     }
     
-    public Node[][] generateNodeArray (BufferedImage img) throws Exception{ //
-        String[][] classLocation = new String[26][17];
-            classLocation[9][0] = "FL110";
-            classLocation[3][1] = "CA106";
-            classLocation[4][1] = "CA107";
-            classLocation[5][1] = "CA108";
-            classLocation[6][1] = "CA109";
-            classLocation[7][1] = "MDR";
-            classLocation[9][2] = "FL111";
-            classLocation[5][3] = "CA105";
-            classLocation[6][3] = "STORAGE";
-            classLocation[7][3] = "WDR";
-            classLocation[14][3] = "LIBRARY";
-            classLocation[21][3] = "GA122";
-            classLocation[23][3] = "GA123";
-            classLocation[9][4] = "FL112";
-            classLocation[0][5] = "COUNSELOR";
-            classLocation[11][5] = "IND114";
-            classLocation[21][5] = "GA121";
-            classLocation[23][5] = "CTDO";
-            classLocation[15][6] = "STORE";
-            classLocation[4][7] = "IND101";
-            classLocation[5][7] = "IND102";
-            classLocation[6][7] = "IND103";
-            classLocation[7][7] = "IND104";
-            classLocation[9][7] = "FL113";
-            classLocation[17][7] = "IND116";
-            classLocation[19][7] = "IND118";
-            classLocation[1][9] = "OFFICE";
-            classLocation[3][9] = "NURSE";
-            classLocation[11][9] = "ACR";
-            classLocation[12][9] = "AO";
-            classLocation[15][9] = "IND115";
-            classLocation[17][9] = "SOED";
-            classLocation[18][9] = "IND117";
-            classLocation[19][9] = "IND117B";
-            classLocation[20][9] = "IND119";
-            classLocation[21][9] = "IND120";
-            classLocation[24][9] = "CUSTODIAN";
-            classLocation[25][9] = "IND124";
-            classLocation[5][10] = "VA143";
-            classLocation[6][10] = "VA141";
-            classLocation[7][10] = "VA139";
-            classLocation[9][10] = "VA137";
-            classLocation[3][11] = "BACKHALL";
-            classLocation[3][12] = "TX145";
-            classLocation[5][12] = "VA144";
-            classLocation[6][12] = "VA142";
-            classLocation[7][12] = "VA140";
-            classLocation[9][12] = "VA138";
-            classLocation[11][12] = "CLERKCOPY";
-            classLocation[17][12] = "LA135";
-            classLocation[22][12] = "HI125";
-            classLocation[24][12] = "HI126";
-            classLocation[11][13] = "LA135";
-            classLocation[3][14] = "TX146";
-            classLocation[5][14] = "OK148";
-            classLocation[6][14] = "OK150";
-            classLocation[7][14] = "OK152";
-            classLocation[9][14] = "OK154";
-            classLocation[11][14] = "NM156";
-            classLocation[15][14] = "LA134";
-            classLocation[17][14] = "KY132";
-            classLocation[18][14] = "KY130";
-            classLocation[21][14] = "KY128";
-            classLocation[3][15] = "TX147";
-            classLocation[11][15] = "NM155";
-            classLocation[15][15] = "LA133";
-            classLocation[24][15] = "HI127";
-            classLocation[5][16] = "OK149";
-            classLocation[6][16] = "OK151";
-            classLocation[7][16] = "OK153";
-            classLocation[18][16] = "STUCO";
-            classLocation[19][16] = "KY131";
-            classLocation[20][16] = "KYSTORAGE";
-            classLocation[21][16] = "KY129";
-
-        
+    public Node[][] generateNodeArray (BufferedImage img) throws Exception{
         int rgb;
         int a;
         int r;
@@ -488,7 +487,8 @@ public class Cluster extends ArrayList<Node>{
         this.Map = Map;
     }
     
-    public void drawRoute(ArrayList<Node> Route) throws IOException{
+    @Deprecated
+    public void drawRoute(ArrayList<Node> Route, Object useless) throws IOException{
         for (Node N : Route) {
             if (N.getRoomName() == "Dest") {
                 break;
