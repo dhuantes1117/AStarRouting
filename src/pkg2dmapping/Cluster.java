@@ -95,7 +95,7 @@ public class Cluster extends ArrayList<Node>{
         this.generate(img);
     }
     
-    public Cluster(String imageLoc, String classLoc, String mappingLoc) throws IOException{
+    public Cluster(String imageLoc, String classLoc, String mappingLoc, String pixelLoc) throws IOException, Exception{
         this.imageFile = new File(imageLoc);
         this.ClassLocations = new File (classLoc);
         this.classMap = new File(mappingLoc);
@@ -104,7 +104,7 @@ public class Cluster extends ArrayList<Node>{
         this.generateCoordinateMapping(classMap);
         this.generateClassLocations(ClassLocations);
         
-        //what else???
+        this.generate(pixelLoc);
     }
     
     public void print(ArrayList<Node> Route){
@@ -315,20 +315,21 @@ public class Cluster extends ArrayList<Node>{
         return this.writableEnvironment;
     }
     
-    private void drawRoute(ArrayList<Node> Route) throws IOException{
+    public void drawRoute(ArrayList<Node> Route) throws IOException{
         int[][] route = new int[Route.size()][2];
         Graphics2D canvas = this.writableEnvironment.createGraphics();
         for (int i = 0; i < Route.size(); i++) {
             Node N = Route.get(i);
-            Dimension D = coordMap.get(new Dimension(N.x(), N.y()));
-            route[i][0] = N.x();
-            route[i][1] = N.y();
+            Dimension D = coordMap.get(new Dimension(N.x() / 10, N.y() / 10));
+            System.out.println(D);
+            route[i][0] = D.width;
+            route[i][1] = D.height;
         }
         canvas.setColor(Color.orange);
         for (int i = 0; i < route.length - 1; i++) {
             canvas.drawLine(route[i][0], route[i][1], route[i + 1][0], route[i + 1][1]);
         }
-        File drawn = new File(imageFile.getAbsolutePath() + File.pathSeparator + "drawnMaps" + File.pathSeparator + imageFile.getName().replace(".png", "DrawnRoute.png"));
+        File drawn = new File("maps/drawnMaps/" + imageFile.getName().replace(".png", "DrawnRoute.png"));
         ImageIO.write(writableEnvironment, "png", drawn);
     }
     
