@@ -1,5 +1,6 @@
 package pkg2dmapping;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -318,12 +319,13 @@ public class Cluster extends ArrayList<Node>{
     public void drawRoute(ArrayList<Node> Route) throws IOException{
         int[][] route = new int[Route.size()][2];
         Graphics2D canvas = this.writableEnvironment.createGraphics();
+        canvas.setStroke(new BasicStroke(7));
         for (int i = 0; i < Route.size(); i++) {
             Node N = Route.get(i);
             Dimension D = coordMap.get(new Dimension(N.x() / 10, N.y() / 10));
-            System.out.println(D);
             route[i][0] = D.width;
             route[i][1] = D.height;
+//            System.out.println("[" + N.x() + "," + N.y() + "] -> " + D.toString());
         }
         canvas.setColor(Color.orange);
         for (int i = 0; i < route.length - 1; i++) {
