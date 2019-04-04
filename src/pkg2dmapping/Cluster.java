@@ -316,25 +316,6 @@ public class Cluster extends ArrayList<Node>{
         return this.writableEnvironment;
     }
     
-    public void drawRoute(ArrayList<Node> Route) throws IOException{
-        int[][] route = new int[Route.size()][2];
-        Graphics2D canvas = this.writableEnvironment.createGraphics();
-        canvas.setStroke(new BasicStroke(7));
-        for (int i = 0; i < Route.size(); i++) {
-            Node N = Route.get(i);
-            Dimension D = coordMap.get(new Dimension(N.x() / 10, N.y() / 10));
-            route[i][0] = D.width;
-            route[i][1] = D.height;
-//            System.out.println("[" + N.x() + "," + N.y() + "] -> " + D.toString());
-        }
-        canvas.setColor(Color.orange);
-        for (int i = 0; i < route.length - 1; i++) {
-            canvas.drawLine(route[i][0], route[i][1], route[i + 1][0], route[i + 1][1]);
-        }
-        File drawn = new File("maps/drawnMaps/" + imageFile.getName().replace(".png", "DrawnRoute.png"));
-        ImageIO.write(writableEnvironment, "png", drawn);
-    }
-    
     private void generateCoordinateMapping(File classMapFile) throws FileNotFoundException{
         coordMap = new HashMap<Dimension, Dimension>();
         Scanner s = new Scanner(classMapFile);
@@ -517,13 +498,37 @@ public class Cluster extends ArrayList<Node>{
     }
     
     public Node getNode(String desiredStartRoom){
-        Node A =  new Node("Empty Room", 1, 1);;
+        Node A =  new Node("Empty Room", 1, 1);
         for (Node N : this) {
             if (N.getRoomName().equals(desiredStartRoom)) {
                 A = N;
             }
         }
         return A;
+    }
+    
+    public double[][] getMappedCoordArray(ArrayList<Node> Route){
+        double[][] retable = new double[Route.size()][2];
+        for (int i = 0; i < retable.length; i++) {
+            Dimension D = coordMap.get(new Dimension(Route.get(i).x() / 10, Route.get(i).y() / 10));
+            retable[i] = new double[] {D.width / 1.0, D.height / 1.0};
+        }
+        return retable;
+    }
+    
+    public void drawSmoothRoute(ArrayList<Node> Route) throws IOException{
+        double[][] smoothCoords = getMappedCoordArray(Route);
+        Smooth s = new Smooth();
+        double[][] smoothed = s.SmoothOut(smoothCoords, 7);
+        
+        Graphics2D canvas = this.writableEnvironment.createGraphics();
+        canvas.setStroke(new BasicStroke(7));
+        canvas.setColor(Color.orange);
+        for (int i = 0; i < smoothed.length; i++) {
+            canvas.drawOval((int)smoothed[i][0], (int)smoothed[i][1], 5, 5);
+        }
+        File drawn = new File("maps/drawnMaps/" + imageFile.getName().replace(".png", "DrawnRoute.png"));
+        ImageIO.write(writableEnvironment, "png", drawn);
     }
     
 }
