@@ -8,7 +8,9 @@ import java.awt.Stroke;
 import java.io.File;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import javax.imageio.ImageIO;
 import java.util.Collection;
@@ -71,8 +73,12 @@ public class Cluster extends ArrayList<Node>{
     private File imageFile;
     private BufferedImage writableEnvironment;
     private File ClassLocations;
-    private File F;
+    private File F;//pixelmap
     private BufferedImage Map;
+    private StringBuffer RouteString;
+    private BufferedWriter RouteWriter;
+    private File drawn;
+    private String Name;
     //0, 1 -> CN214
     
     
@@ -100,6 +106,9 @@ public class Cluster extends ArrayList<Node>{
         this.imageFile = new File(imageLoc);
         this.ClassLocations = new File (classLoc);
         this.classMap = new File(mappingLoc);
+        this.drawn = new File("route.txt");
+        
+        this.RouteWriter = new BufferedWriter(new FileWriter(drawn));
         
         this.generateWritableEnvironment(imageFile);
         this.generateCoordinateMapping(classMap);
@@ -215,7 +224,7 @@ public class Cluster extends ArrayList<Node>{
         ApplicableNeighbors.removeIf(inCLOSED);
         for (int i = 0; i < ApplicableNeighbors.size(); i++) {
             Node N = ApplicableNeighbors.get(i);
-            if ((N.isWormhole() || N.isClassroom()) && !N.equals(Dest)) {//not checked with different floors
+            if ((N.isJump() || N.isClassroom()) && !N.equals(Dest)) {//not checked with different floors
                 ApplicableNeighbors.remove(i);
                 i--;
             }
@@ -253,8 +262,10 @@ public class Cluster extends ArrayList<Node>{
         for (int k = -1; k < 2; k++) {
             for (int l = -1; l < 2; l++) {
                 try {
-                    if (!N.equals(tempGrid[k + i][j + l])) {
-                        this.connect(N, tempGrid[k + i][j + l]);
+                    if (k == 0 ^ l == 0) {
+                        if (!N.equals(tempGrid[k + i][j + l])) {
+                            this.connect(N, tempGrid[k + i][j + l]);
+                        }
                     }
                 } catch (Exception e) {
                 }
@@ -290,7 +301,7 @@ public class Cluster extends ArrayList<Node>{
     public void closestStairs() {
         ArrayList<Node> Parsable = new ArrayList<Node>();
         for (Node N : this) {
-            if (N.isWormhole()) {
+            if (N.isJump()) {
                 Parsable.add(N);
             }
         }
@@ -531,4 +542,62 @@ public class Cluster extends ArrayList<Node>{
         ImageIO.write(writableEnvironment, "png", drawn);
     }
     
+    public void writeRoute(ArrayList<Node> Route) throws IOException{
+        double[][] smoothCoords = getMappedCoordArray(Route);
+        Smooth s = new Smooth();
+        double[][] smoothed = s.SmoothOut(smoothCoords, 0);
+        RouteString = new StringBuffer();
+        for (double[] coord : smoothed) {
+            RouteString.append(coord[0] + "," + coord[1] + "\n");
+        }
+        RouteWriter.write(RouteString.toString());
+        RouteWriter.flush();
+        RouteWriter.close();
+    }
+    
+    public void linkWith(Cluster joined, int anchorX, int anchorY, int offX, int offY){
+        for (Node N : joined) {
+            N.setX(N.x() + anchorX + offX);
+            N.setY(N.y() + anchorY + offY);
+            if(N.getRoomName().contains("TNLA")){
+                N.setRoomName("TNLA (" + N.x() + "," + N.y() + ")");
+            } else if (N.getRoomName().contains("Staircase")){
+                N.setRoomName("Staircase At (" + N.x() + "," + N.y() + ")");
+            }
+        }
+        this.addAll(joined);
+        this.connect(this.closest(anchorX, anchorY), this.closest(anchorX + offX, anchorY + offY));
+    }
+    
+    @Override
+    public boolean contains(Object O){
+        if (O instanceof Node) {
+            if(((Node) O).isJump()){
+                //jump comparison -- likely name "STAIRCASE D1"
+                for (Node N : this) {
+                    if(N.isJump()){
+                        if(N.equals(O)){
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return super.contains(O);
+    }
+
+    /**
+     * @return the Name
+     */
+    public String getName() {
+        return Name;
+    }
+
+    /**
+     * @param Name the Name to set
+     */
+    public void setName(String Name) {
+        this.Name = Name;
+    }
 }

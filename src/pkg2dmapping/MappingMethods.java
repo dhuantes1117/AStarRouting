@@ -32,7 +32,7 @@ public class MappingMethods {
         Cluster Grid2 = new Cluster("maps/writeOnlyMaps/reaganFloorPlanPage1.png", "classLocations.txt", "nodeHash.txt", "maps/reagan_maps/");
         Route = Grid2.routeAstar(Grid2.getNode(args[0]), Grid2.getNode(args[1]));
         
-        Grid2.drawSmoothRoute(Route);
+        Grid2.writeRoute(Route);
     }
     
 }

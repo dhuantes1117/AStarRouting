@@ -15,7 +15,7 @@ class Node{
     private int h;
     private boolean origin;
     private boolean classroom;
-    private boolean wormhole;
+    private boolean jump;
     private String RoomName;
     private String ClassName;
     private Node Parent;
@@ -82,7 +82,7 @@ class Node{
         this.y = y;
         this.h = Integer.MAX_VALUE;
         this.origin = destination;
-        this.wormhole = wormhole;
+        this.jump = wormhole;
     }
     
     //MAIN NODE CONSTRUCTOR CLASSROOMS
@@ -336,16 +336,40 @@ class Node{
     }
 
     /**
-     * @return the wormhole
+     * @return the jump
      */
-    public boolean isWormhole() {
-        return wormhole;
+    public boolean isJump() {
+        return jump;
     }
 
     /**
-     * @param wormhole the wormhole to set
+     * @param jump the jump to set
      */
-    public void setWormhole(boolean wormhole) {
-        this.wormhole = wormhole;
+    public void setJump(boolean jump) {
+        this.jump = jump;
+    }
+
+    /**
+     * @param x the x to set
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
+     * @param y the y to set
+     */
+    public void setY(int y) {
+        this.y = y;
+    }
+    
+    @Override
+    public boolean equals(Object O){
+        if(O instanceof Node){
+            if(((Node) O).isJump()){
+                return (((Node) O).getRoomName()).equals(this.RoomName);
+            }
+        }
+        return super.equals(O);
     }
 }

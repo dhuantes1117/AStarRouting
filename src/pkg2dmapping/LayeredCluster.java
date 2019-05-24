@@ -8,6 +8,8 @@ import java.util.*;
  * @author dhuant
  */
 public class LayeredCluster extends ArrayList<Cluster>{
+    //DM <-> DN
+    //UM <-> UN
     public LayeredCluster() {
         
     }
@@ -33,7 +35,10 @@ public class LayeredCluster extends ArrayList<Cluster>{
         if (A_Layer == B_Layer) {
             return A_Layer.routeAstar(A, B);
         } else {
-            Node commonPoint = closestWormhole(A_Layer, B_Layer, A, B);
+            //extra step, find a way so classify which kind of relation is going on and act
+            //Map of strings saved as "NAMEtoNAME" would work, easy to error check...
+            ///yeah lets do that
+            Node commonPoint = closestJump(A_Layer, B_Layer, A, B);
             ARoute = A_Layer.routeAstar(A, commonPoint);
             BRoute = B_Layer.routeAstar(commonPoint, B);
             B_Layer.remove(0);
@@ -49,23 +54,23 @@ public class LayeredCluster extends ArrayList<Cluster>{
      * @param Origin the starting Node, located in A
      * @param Destination the ending Node, located in B
      */
-    public Node closestWormhole(Cluster A, Cluster B, Node Origin, Node Destination) throws Exception {
-        ArrayList<Node> Wormholes = new ArrayList<>();
+    public Node closestJump(Cluster A, Cluster B, Node Origin, Node Destination) throws Exception {
+        ArrayList<Node> Jumps = new ArrayList<>();
         if (A.size() >= B.size()) {
             for (Node N : B) {
-                if (N.isWormhole() && A.contains(N)) {
-                    Wormholes.add(N);
+                if (N.isJump() && A.contains(N)) {
+                    Jumps.add(N);
                 }
             }
         } else {
             for (Node N : A) {
-                if (N.isWormhole() && B.contains(N)) {
-                    Wormholes.add(N);
+                if (N.isJump() && B.contains(N)) {
+                    Jumps.add(N);
                 }
             }
         }
         
-        if (Wormholes.isEmpty()) {
+        if (Jumps.isEmpty()) {
             throw new Exception("Wormholes was empty... look into this");
         }
         
@@ -73,7 +78,7 @@ public class LayeredCluster extends ArrayList<Cluster>{
         double currMin = Integer.MAX_VALUE;
         double currVal;
         Node Best = new Node(-1, -1);
-        for (Node W : Wormholes) {
+        for (Node W : Jumps) {
             currVal = A.distance(W, Origin) + B.distance(W, Destination);
             if (currVal < currMin) {
                 currMin = currVal;
