@@ -343,20 +343,9 @@ public class Cluster extends ArrayList<Node>{
             
     }
     
-    private BufferedImage generateBuferredImage (String fileLoc) throws Exception {
-        BufferedImage img = null;
-        File f = null;
-
-        //read image
-        try {
-            f = new File(fileLoc);
-            for (File map : f.listFiles()) {
-                img = ImageIO.read(map);
-                this.setF(map);
-            }
-        } catch (IOException e) {
-            throw new Exception(e.getMessage());
-        }
+    private BufferedImage generateBuferredImage (String fileLoc) throws IOException {
+        File f = new File(fileLoc);
+        BufferedImage img =  img = ImageIO.read(f);
         this.setMap(img);
         return img;
     }
@@ -377,7 +366,7 @@ public class Cluster extends ArrayList<Node>{
         //these lines define beginning and end of each step
         //need to write code to define overall beginning and end
         
-        
+        //need to include Ulink and dlink in class locations!!!! that way for each map we can set ulink and Dlink
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 rgb = img.getRGB(i, j);

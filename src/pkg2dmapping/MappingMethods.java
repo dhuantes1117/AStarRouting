@@ -29,7 +29,11 @@ public class MappingMethods {
             return;
         }
         ArrayList<Node> Route = new ArrayList<Node>();
-        Cluster Grid2 = new Cluster("maps/writeOnlyMaps/reaganFloorPlanPage1.png", "classLocations.txt", "nodeHash.txt", "maps/reagan_maps/");
+        Cluster Grid2 = new Cluster("maps/writeOnlyMaps/reaganFloorPlanDM.png", 
+                "classLoc/downstairsMCL.txt", 
+                "nodeHashes/nodeHashDM.txt", 
+                "maps/reagan_maps/downstairsM.png");
+        Grid2.setName("DM");
         Route = Grid2.routeAstar(Grid2.getNode(args[0]), Grid2.getNode(args[1]));
         
         Grid2.writeRoute(Route);
