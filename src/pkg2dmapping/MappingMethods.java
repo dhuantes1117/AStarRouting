@@ -29,14 +29,40 @@ public class MappingMethods {
             return;
         }
         ArrayList<Node> Route = new ArrayList<Node>();
-        Cluster Grid2 = new Cluster("maps/writeOnlyMaps/reaganFloorPlanDM.png", 
+        LayeredCluster School = new LayeredCluster();
+        
+        
+        Cluster DownstairsMain = new Cluster("maps/writeOnlyMaps/reaganFloorPlanDM.png", 
                 "classLoc/downstairsMCL.txt", 
                 "nodeHashes/nodeHashDM.txt", 
                 "maps/reagan_maps/downstairsM.png");
-        Grid2.setName("DM");
-        Route = Grid2.routeAstar(Grid2.getNode(args[0]), Grid2.getNode(args[1]));
+        DownstairsMain.setName("DM");
+        DownstairsMain.getNode("TNLA (0,11)").setRoomName("Dlink");
+        DownstairsMain.getNode("TNLA (0,11)").setJump(true);
         
-        Grid2.writeRoute(Route);
+//        System.out.println("size " + DownstairsMain.size());
+//        
+//        DownstairsMain.print(DownstairsMain.routeAstar(DownstairsMain.getNode("FL110"), DownstairsMain.getNode("HI126")));
+//        
+//        Cluster DownstairsNew = new Cluster("maps/writeOnlyMaps/reaganFloorPlanDN.png", 
+//                "classLoc/downstairsNCL.txt", 
+//                "nodeHashes/nodeHashDN.txt", 
+//                "maps/reagan_maps/downstairsN.png");
+//        DownstairsNew.setName("DN");
+//        DownstairsNew.getNode("TNLA (25,8)").setRoomName("Dlink");
+//        DownstairsNew.getNode("TNLA (25,8)").setJump(true);
+//        
+//        
+//        School.add(DownstairsNew);
+//        School.add(DownstairsMain);//Dlink
+        
+        Route = DownstairsMain.routeAstar(DownstairsMain.getNode(args[0]), DownstairsMain.getNode(args[1]));
+        
+        //Route = School.Route(DownstairsMain.getNode("NM155"), DownstairsNew.getNode("MS301"));//NM155, MS301
+        
+        //DownstairsMain.print(Route);
+        
+        DownstairsMain.writeRoute(Route);
     }
     
 }

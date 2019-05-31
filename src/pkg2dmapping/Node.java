@@ -363,13 +363,13 @@ class Node{
         this.y = y;
     }
     
-    @Override
-    public boolean equals(Object O){
-        if(O instanceof Node){
-            if(((Node) O).isJump()){
-                return (((Node) O).getRoomName()).equals(this.RoomName);
-            }
-        }
-        return super.equals(O);
-    }
+//    @Override
+//    public boolean equals(Object O){
+//        if(O instanceof Node){
+//            if(((Node) O).isJump()){
+//                return (((Node) O).getRoomName()).equals(this.RoomName);
+//            }
+//        }
+//        return super.equals(O);
+//    }
 }

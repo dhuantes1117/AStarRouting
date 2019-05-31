@@ -162,6 +162,9 @@ public class Cluster extends ArrayList<Node>{
         System.out.println(Dest.getRoomName());
         AstarB1(Best, Dest);
         System.out.println(OPEN.size());
+        System.out.println(Dest.getRoomName());
+        System.out.println(OPEN.peek().getRoomName());
+        System.out.println(!OPEN.peek().equals(Dest));
         while(!OPEN.peek().equals(Dest)) {
             counter++;
             if (OPEN.size() == 1) {
@@ -196,6 +199,7 @@ public class Cluster extends ArrayList<Node>{
             Retable.add(0, Last.getParent());
         }
         reset();
+        System.out.println(Retable.size());
         return Retable;
     }
     
@@ -558,23 +562,23 @@ public class Cluster extends ArrayList<Node>{
         this.connect(this.closest(anchorX, anchorY), this.closest(anchorX + offX, anchorY + offY));
     }
     
-    @Override
-    public boolean contains(Object O){
-        if (O instanceof Node) {
-            if(((Node) O).isJump()){
-                //jump comparison -- likely name "STAIRCASE D1"
-                for (Node N : this) {
-                    if(N.isJump()){
-                        if(N.equals(O)){
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            }
-        }
-        return super.contains(O);
-    }
+//    @Override
+//    public boolean contains(Object O){
+//        if (O instanceof Node) {
+//            if(((Node) O).isJump()){
+//                //jump comparison -- likely name "STAIRCASE D1"
+//                for (Node N : this) {
+//                    if(N.isJump()){
+//                        if(N.equals(O)){
+//                            return true;
+//                        }
+//                    }
+//                    return false;
+//                }
+//            }
+//        }
+//        return super.contains(O);
+//    }
 
     /**
      * @return the Name
